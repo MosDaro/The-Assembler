@@ -1,5 +1,3 @@
-/* updated */
-
 /* dataStructs.h contain all the structs definitions of dataStructs.c and the another definitions */
 #include <stdlib.h>
 #include <string.h>
