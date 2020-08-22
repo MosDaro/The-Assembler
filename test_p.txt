@@ -1,0 +1,74 @@
+Error found in file ../test1.as at line 8: In this file symbol has already defined
+Error found in file ../test1.as at line 9: In this file symbol has already defined
+Error found in file ../test1.as at line 10: In this file symbol has already defined
+Error found in file ../test1.as at line 11: In this file symbol has already defined
+Error found in file ../test1.as at line 13: The length of symbol over the max
+Error found in file ../test1.as at line 14: Symbol must started with letter
+Error found in file ../test1.as at line 15: Symbol must contain only letter or numbers
+Error found in file ../test1.as at line 16: Directive without word
+Error found in file ../test1.as at line 17: You can't declare entry symbol because declared as external
+Error found in file ../test1.as at line 18: The length of symbol over the max
+Error found in file ../test1.as at line 19: Symbol must contain only letter or numbers
+Error found in file ../test1.as at line 20: Symbol must started with letter
+Error found in file ../test1.as at line 23: String parameter must end with quotes
+Error found in file ../test1.as at line 24: String parameter must start with quotes
+Error found in file ../test1.as at line 25: String parameter must start with quotes
+Error found in file ../test1.as at line 26: In data directive parameters there is no digits before comma
+Error found in file ../test1.as at line 27: In data directive parameters there is double commas
+Error found in file ../test1.as at line 28: Data parameters can't end with comma
+Error found in file ../test1.as at line 29: In data directive parameters there is no comma seprates between numbers
+Error found in file ../test1.as at line 30: Invalid letter for parameter data
+Error found in file ../test1.as at line 31: Invalid letter for parameter data
+Error found in file ../test1.as at line 32: Invalid letter for parameter data
+Error found in file ../test1.as at line 33: Invalid letter for parameter data
+Error found in file ../test1.as at line 36: Missing parameters for instruction
+Error found in file ../test1.as at line 37: Operation requires 2 operands
+Error found in file ../test1.as at line 38: Extra letters after the parameters
+Error found in file ../test1.as at line 39: Missing parameters for instruction
+Error found in file ../test1.as at line 40: Extra letters after the parameters
+Error found in file ../test1.as at line 41: Operation requires 2 operands
+Error found in file ../test1.as at line 42: Operation requires 2 operands
+Error found in file ../test1.as at line 43: Missing parameter for instruction
+Error found in file ../test1.as at line 44: Missing parameter for instruction
+Error found in file ../test1.as at line 45: Extra letters after the parameter
+Error found in file ../test1.as at line 46: Missing parameter for instruction
+Error found in file ../test1.as at line 47: Missing parameter for instruction
+Error found in file ../test1.as at line 48: Extra letters after the parameter
+Error found in file ../test1.as at line 49: Missing parameter for instruction
+Error found in file ../test1.as at line 50: Extra letters after the parameter
+Error found in file ../test1.as at line 51: Missing parameter for instruction
+Error found in file ../test1.as at line 52: Operation requires no operands
+Error found in file ../test1.as at line 53: Operation requires no operands
+Error found in file ../test1.as at line 58: This instruction can't contain relative parameters
+Error found in file ../test1.as at line 59: This instruction can't contain relative parameters
+Error found in file ../test1.as at line 60: This instruction can't contain relative parameters
+Error found in file ../test1.as at line 61: This instruction can't contain relative parameters
+Error found in file ../test1.as at line 62: In this instruction the second parameter can't be immediate
+Error found in file ../test1.as at line 63: In this instruction the second parameter can't be immediate
+Error found in file ../test1.as at line 65: In the instruction cmp the parameters can't be relative address
+Error found in file ../test1.as at line 66: In the instruction cmp the parameters can't be relative address
+Error found in file ../test1.as at line 67: In the instruction cmp the parameters can't be relative address
+Error found in file ../test1.as at line 69: This instruction can't contain relative parameters
+Error found in file ../test1.as at line 70: This instruction can't contain relative parameters
+Error found in file ../test1.as at line 71: This instruction can't contain relative parameters
+Error found in file ../test1.as at line 72: This instruction can't contain relative parameters
+Error found in file ../test1.as at line 73: In this instruction the second parameter can't be immediate
+Error found in file ../test1.as at line 75: This instruction can't contain relative parameters
+Error found in file ../test1.as at line 76: This instruction can't contain relative parameters
+Error found in file ../test1.as at line 77: This instruction can't contain relative parameters
+Error found in file ../test1.as at line 78: This instruction can't contain relative parameters
+Error found in file ../test1.as at line 79: In this instruction the second parameter can't be immediate
+Error found in file ../test1.as at line 81: In the instruction lea the first parameter can be only direct address
+Error found in file ../test1.as at line 82: In the instruction lea the first parameter can be only direct address
+Error found in file ../test1.as at line 83: In the instruction lea the first parameter can be only direct address
+Error found in file ../test1.as at line 84: In the instruction lea the first parameter can be only direct address
+Error found in file ../test1.as at line 85: In the instruction lea the first parameter can be only direct address
+Error found in file ../test1.as at line 87: In this instruction the parameter can be only directive or register address
+Error found in file ../test1.as at line 88: In this instruction the parameter can be only directive or register address
+Error found in file ../test1.as at line 89: In this instruction the parameter can be only directive or register address
+Error found in file ../test1.as at line 90: In this instruction the parameter can be only directive or register address
+Error found in file ../test1.as at line 91: In this instruction the parameter can be only directive or register address
+Error found in file ../test1.as at line 93: In this instruction the parameter can be only directive or relative address
+Error found in file ../test1.as at line 94: In this instruction the parameter can be only directive or relative address
+Error found in file ../test1.as at line 95: In this instruction the parameter can be only directive or relative address
+Error found in file ../test1.as at line 97: In the instruction prn the parameter can't be relative address
