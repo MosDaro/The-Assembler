@@ -4,7 +4,7 @@
 #include "fileHandler.h"
 
 /*@todo delete before finish*/
-#define DEBUG 0
+#define DEBUG 1
 int test();
 void checkOriginalInput();
 void checkErrorsInput();
@@ -43,9 +43,9 @@ int test(){
 }
 
 void checkOriginalInput(){
-    char srcFile[] = "../test1";
-    char resFile[] = "../test1.ob";
-    char fileResCmp[] = "../test1_p.txt";
+    char srcFile[] = "../tests/test1";
+    char resFile[] = "../tests/test1.ob";
+    char fileResCmp[] = "../tests/test1_p.txt";
     int isValid;
 
     readFile(srcFile);
@@ -57,9 +57,9 @@ void checkOriginalInput(){
 }
 
 void checkErrorsInput(){
-    char srcFile[] = "../test_k";
-    char srcFileRes[] = "../ccc.txt";
-    char fileResCmp[] = "../test_p.txt";
+    char srcFile[] = "../tests/test_k";
+    char srcFileRes[] = "../tests/temp.txt";
+    char fileResCmp[] = "../tests/test_p.txt";
     int isValid;
     FILE * f;
     FILE * handle;
@@ -75,7 +75,6 @@ void checkErrorsInput(){
     readFile(srcFile);
     fclose(f);
     stderr = handle;
-
 
     isValid = checkValidateCode(srcFileRes, fileResCmp);
     if(isValid){
@@ -105,7 +104,7 @@ int checkValidateCode(char * resFile, char * fileResCmp){
         }
         if(strcmp(lineSrc, lineDst)) {
             isValid = false;
-            fprintf(stderr,"In file %s at line %d not compare\n", resFile, lineCounter);
+            fprintf(stderr,"In file %s at line %d not compare to %s\n", resFile, lineCounter, fileResCmp);
         }
         lineCounter++;
     }
