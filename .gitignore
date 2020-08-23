@@ -11,7 +11,7 @@ CMakeLists.txt
 .DS_Store
 
 assembler
-*.as
+#*.as
 *.ent
 *.ext
 *.ob
