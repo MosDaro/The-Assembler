@@ -23,6 +23,13 @@ int immediateAddress(char*, fileData * fd);
 int directAddress(char*, fileData * fd);
 int relativeAddress(char*, fileData * fd);
 int registerAddress(char*, fileData * fd);
+
+/**
+ * check if is valid char for some of commands
+ * @param c char to cher
+ * @return true if valid otherwise false
+ */
+int isValidSpecialCharsBase(char c, fileData * fd);
 int getParam(char *params, char * save, fileData * fd);
 
 /* two pars */

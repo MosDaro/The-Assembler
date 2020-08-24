@@ -72,3 +72,14 @@ Error found in file ../tests/test_k.as at line 93: In this instruction the param
 Error found in file ../tests/test_k.as at line 94: In this instruction the parameter can be only directive or relative address
 Error found in file ../tests/test_k.as at line 95: In this instruction the parameter can be only directive or relative address
 Error found in file ../tests/test_k.as at line 97: In the instruction prn the parameter can't be relative address
+Error found in file ../tests/test_k.as at line 100: Special character is not valid in parameters
+Error found in file ../tests/test_k.as at line 101: Special character is not valid in parameters
+Error found in file ../tests/test_k.as at line 102: Operation requires 2 operands
+Error found in file ../tests/test_k.as at line 103: The length of symbol over the max
+Error found in file ../tests/test_k.as at line 104: The length of symbol over the max
+Error found in file ../tests/test_k.as at line 105: Instruction not found
+Error found in file ../tests/test_k.as at line 106: The length of symbol over the max
+Error found in file ../tests/test_k.as at line 110: Special character is not valid in parameters
+Error found in file ../tests/test_k.as at line 112: The second parameter can be only direct or register address
+Error found in file ../tests/test_k.as at line 113: The second parameter can be only direct or register address
+Error found in file ../tests/test_k.as at line 114: Special character is not valid in parameters

@@ -97,19 +97,18 @@ jsr #-1
 prn &op0
 
 ; More General syntax errors
-;mov $,#-4
-;mov -9.7
-;mov 123
-;mov THISISAVERYVERYLONGLABELWHICHISINVALIDHERE
-;.entry THISISAVERYVERYLONGLABELWHICHISINVALIDHERE
-;op operand,operand
-;label .data "Hello World!" mov r0,#-4
-
+mov $,#-4
+mov -9.7
+mov 123
+mov THISISAVERYVERYLONGLABELWHICHISINVALIDHERE
+.entry THISISAVERYVERYLONGLABELWHICHISINVALIDHERE
+op operand,operand
+label .data "Hello World!" mov r0,#-4
 
 
 ; my
-;cmp #-0,MYLA!BEL
-;l: .extern label
-;lea label, #2
-;lea label, &label
-;mov $,r0
+cmp #-0, MYLA!BEL
+l: .extern label
+lea label, #2
+lea label, &label
+mov $,r0
