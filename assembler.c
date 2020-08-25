@@ -1,6 +1,3 @@
-/* updated */
-
-
 #include "fileHandler.h"
 
 /*@todo delete before finish*/

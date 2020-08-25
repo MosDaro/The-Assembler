@@ -1,7 +1,8 @@
-/* updated */
-
 /* symbolHandler.c contain all the symbols and symbol-table handling */
 #include "symbolHandler.h"
+
+extern char * cmdList[];
+extern char * regList[];
 
 /* The function checkSymbol check if the symbol valid */
 void checkSymbol(char *symbol, int numberPass, fileData * fd){
@@ -30,18 +31,19 @@ void syntaxCheck(char *symbol, fileData * fd){
                 setErrorData(fd, "Symbol must contain only letter or numbers");
             }
     }
-    
+
     /* all the saved words in our program */
-    if(!fd->isHasError && !(
-        strcmp(symbol,"r0") && strcmp(symbol,"r1") && strcmp(symbol,"r2") && strcmp(symbol,"r3") && strcmp(symbol,"r4") &&
-        strcmp(symbol,"r5") && strcmp(symbol,"r6") && strcmp(symbol,"r7") &&
-        strcmp(symbol,"mov") && strcmp(symbol,"cmp") && strcmp(symbol,"add") && strcmp(symbol,"sub") &&
-        strcmp(symbol,"lea") && strcmp(symbol,"clr") && strcmp(symbol,"not") && strcmp(symbol,"inc") &&
-        strcmp(symbol,"dec") && strcmp(symbol,"jmp") && strcmp(symbol,"bne") && strcmp(symbol,"jsr") &&
-        strcmp(symbol,"red") && strcmp(symbol,"prn") && strcmp(symbol,"rts") && strcmp(symbol,"stop") &&
-        strcmp(symbol,"string") && strcmp(symbol,"data") && strcmp(symbol,"extern") && strcmp(symbol,"entry")
-    )){
-        setErrorData(fd, "Symbol name can't be reserved word");
+    if(!fd->isHasError){
+        for(i = 1; i < NUM_OF_CMD && !fd->isHasError; i++){
+            if(!strcmp(cmdList[i], symbol)){
+                setErrorData(fd, "Symbol name can't be reserved word");
+            }
+        }
+        for(i = 0; i < NUM_OF_REG && !fd->isHasError; i++){
+            if(!strcmp(regList[i], symbol)){
+                setErrorData(fd, "Symbol name can't be reserved word");
+            }
+        }
     }
 }
 

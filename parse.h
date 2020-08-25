@@ -1,6 +1,7 @@
-/* updated */
-
 /* parse.h contain all the parse.c definitions */
+
+#ifndef PARCE_H
+#define PARCE_H
 
 #include "symbolHandler.h"
 #include "errors.h"
@@ -25,3 +26,5 @@ int dataValidation(char *str);
 void dataCommaValidation(int *sign, int *comma, int *digit, int *blank, int *insertFlag, fileData * fd);
 void dataSignValidation(char *currVal, int *sign, int *comma, int *digit, int *blank, int *insertFlag, fileData * fd);
 void dataDigitValidation(char *currVal, int *sign, int *comma, int *digit, int *blank, int *insertFlag, fileData * fd);
+
+#endif
