@@ -4,7 +4,7 @@
 #include "fileHandler.h"
 
 /*@todo delete before finish*/
-#define DEBUG 1
+#define DEBUG 0
 int test();
 void checkOriginalInput();
 void checkErrorsInput();

@@ -122,6 +122,17 @@ int checkCmd(char *cmd){
     return found; /* not found */
 }
 
+int isValidSpecialCharsBase(char c, fileData * fd){
+    int isValid = false;
+
+    if(isdigit(c) || isalpha(c) || (c == '&' || c == '#' || c == '+' || c == '-')){
+        isValid = true;
+    }else {
+        setErrorData(fd, "Special character is not valid in parameters");
+    }
+    return isValid;
+}
+
 int getParam(char *params, char * save, fileData * fd){
     char *c = params;
     char temp[SYMBOL_LEN] = "";
@@ -131,15 +142,17 @@ int getParam(char *params, char * save, fileData * fd){
     if(!strlen(c)){ /* no length no params */
         setErrorData(fd, "Missing parameters for instruction");
     }else{
-        while (*c && !isspace(*c) && *c != ',') { /* insert the first parameter */
+        while (*c && !isspace(*c) && *c != ',' && isValidSpecialCharsBase(*c, fd)) { /* insert the first parameter */
             temp[i++] = *c;
             c++;
         }
-        temp[i] = '\0'; /* end of string */
-        if(strlen(temp)){
-            strcpy(save, temp);
-        }else{
-            save[0] = '\0';
+        if(!fd->isHasError) {
+            temp[i] = '\0'; /* end of string */
+            if (strlen(temp)) {
+                strcpy(save, temp);
+            } else {
+                save[0] = '\0';
+            }
         }
     }
 
@@ -151,10 +164,6 @@ void twoParsCheck(char *pars, int type, int *word, fileData * fd) {
     char *c;
     char par1[SYMBOL_LEN]="", par2[SYMBOL_LEN]=""; /* parameters names to save */
     int i;
-
-    if(fd->lineNumber == 100){
-        printf("a\n");
-    }
 
     i = getParam(pars, par1, fd);
     if(!fd->isHasError){
