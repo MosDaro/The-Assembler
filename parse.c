@@ -1,5 +1,3 @@
-/* updated */
-
 /* parse.c contain all the function that parse info from file */
 #include "parse.h"
 

@@ -1,5 +1,3 @@
-/* updated */
-
 /* instruction.c contain all the instruction parse and the word-code handle */
 #include "instruction.h"
 

@@ -1,10 +1,9 @@
-/* updated */
-
 /* instruction.h contain all the instruction.c definitions */
+#ifndef INSTRUCTION_H
+#define INSTRUCTION_H
+
 #include <string.h>
 #include <ctype.h>
-
-#include "errors.h"
 #include "symbolHandler.h"
 #include "dataStructs.h"
 
@@ -13,7 +12,6 @@
 #define NUM_OF_REG 8
 
 /*functions prototype */
-
 void cmdParse(char*,char*, fileData * fd);
 int checkCmd(char*);
 int noParCheck(char * line, fileData * fd);
@@ -44,3 +42,5 @@ void Prn_Pars(char*,int*, fileData * fd);
 
 void handleAddressingTwoParams(int, char *, char *, int *, fileData * fd);
 void handleAddressingOneParam(int, char *, int *, fileData * fd);
+
+#endif
