@@ -1,25 +1,19 @@
-/* symbolHandler.h contain all the symbolHandler.c defenition and macros */
+/* symbolHandler.h contain all the symbolHandler.c defined and macros */
+#ifndef SYMBOL_H
+#define SYMBOL_H
+
 #include <string.h>
 #include <ctype.h>
-/*#include <stdlib.h>*/
 #include "dataStructs.h"
-
 #include "errors.h"
+#include "instruction.h"
 
 #define FIRST_PASS 1
 #define SECOND_PASS 2
-
-/* updated */
-
 #define BLANKJMP(x) while(isspace(*x)) (x)++; /* jump above blanks */
-
-
 
 extern int IC;
 extern int DC;
-
-#ifndef STRUCTURES
-#define STRUCTURES
 
 typedef enum{SYMBOL_CODE = 1, SYMBOL_DATA = 2, SYMBOL_ENTRY = 4, SYMBOL_EXTERNAL = 8}symbolType;
 typedef struct symbolNode /* symbol table node */
@@ -41,7 +35,6 @@ typedef struct externNode /* extern list node */
 
 externNode *extHead, *extTail;
 symbolNode *symHead, *symTail;
-#endif
 
 /* function prototype */
 void checkSymbol(char*,int, fileData * fd);
@@ -56,3 +49,5 @@ void insertExt(char*, unsigned long int);
 void createExt(char*, unsigned long int);
 void addExt(char*, unsigned long int);
 void resetSym(symbolNode *node);
+
+#endif

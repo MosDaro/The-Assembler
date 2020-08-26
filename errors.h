@@ -1,8 +1,6 @@
-/* updated */
-
 /* errors.h contain the variable and function declaration of errors.c */
-#ifndef ERROS_H
-#define ERROS_H
+#ifndef ERRORS_H
+#define ERRORS_H
 
 #include <stdio.h>
 #include <string.h>

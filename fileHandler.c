@@ -1,5 +1,3 @@
-/* updated */
-
 /* fileHandler.c is contain all the files handling */
 #include "fileHandler.h"
 

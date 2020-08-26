@@ -1,4 +1,7 @@
 /* dataStructs.h contain all the structs definitions of dataStructs.c and the another definitions */
+#ifndef DATA_STRUCTURE_H
+#define DATA_STRUCTURE_H
+
 #include <stdlib.h>
 #include <string.h>
 #include "errors.h"
@@ -11,10 +14,6 @@
 #define SECOND_FIELD 65280
 #define THIRD_FIELD 16711680
 #define SYMBOL_LEN 32
-
-
-#ifndef ENUMS
-#define ENUMS
 
 enum {false, true};
 
@@ -40,10 +39,6 @@ enum funct{FIRST_FNCT=3, SECOND_FNCT, THIRD_FNCT, FORTH_FNCT, FIFTH_FNCT};
 /* ARE bits in word */
 enum ARE{E_BIT,R_BIT,A_BIT};
 
-#endif
-
-#ifndef THEDATA
-#define THEDATA
 typedef struct dataNode /* list of data (all the data of .string and .data directive) */
 {
     unsigned char *val; /* bitfiled of 24 bits */
@@ -66,7 +61,6 @@ typedef struct fixNode /* the fix list is all the unknown symbols list */
     struct fixNode *next; /* next node pointer */
     struct fixNode *prev; /* prev node pointer */
 }fixNode;
-#endif
 
 extern int DC;
 extern int IC;
@@ -94,3 +88,6 @@ void setVal(unsigned char* word, unsigned long int value);
 int setInt(unsigned char* word);
 void clearARE(unsigned char *word);
 void resetAlocVal(unsigned char *val);
+
+#endif
+  

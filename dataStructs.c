@@ -1,5 +1,3 @@
-/* updated */
-
 /* dataStructs.c contain all the structure handling */
 #include "dataStructs.h"
 

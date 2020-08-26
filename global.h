@@ -1,11 +1,7 @@
-/* updated */
-
-
 #ifndef ASSEMBLER_GLOBAL_H
 #define ASSEMBLER_GLOBAL_H
 
 #define FILE_NAME_LEN 30
-
 #define MSG_LEN 100
 
 typedef struct {
