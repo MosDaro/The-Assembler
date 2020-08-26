@@ -48,11 +48,11 @@ void getSymbol(char * str, char * save, unsigned int * nextIndex, fileData * fd)
     BLANKJMP(temp) /* ignore blanks */
     *nextIndex = temp - copy;
     temp = strtok(temp, ":");
-    if(strlen(temp) > SYMBOL_LEN){
-        setErrorData(fd, "The length of symbol over the max");
+    if (strlen(str + *nextIndex) == strlen(temp)) { /* not found : isn't have label */
         save[0] = '\0';
     }else {
-        if (strlen(str + *nextIndex) == strlen(temp)) {
+        if(strlen(temp) > SYMBOL_LEN){
+            setErrorData(fd, "The length of symbol over the max");
             save[0] = '\0';
         } else {
             strcpy(save, temp);
