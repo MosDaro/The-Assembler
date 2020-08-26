@@ -4,7 +4,7 @@
 #include "dataStructs.h"
 
 /* The function insertData is insert the given value to data list */
-void insertData(int value){
+void insertData(unsigned long int value){
     if(dataHead == NULL)
         createData(value); /* create data list */
     else
@@ -12,7 +12,7 @@ void insertData(int value){
 }
 
 /* The function createData create data list and insert the given value to the list */
-void createData(int value){
+void createData(unsigned long int value){
     dataHead = (dataNode*)malloc(sizeof(dataNode));
 
     if(dataHead == NULL){
@@ -22,7 +22,7 @@ void createData(int value){
     if(dataHead->val == NULL){
         allocateFailed();
     }
-    *(dataHead->val) = 0;
+    resetAlocVal(dataHead->val);
     setVal(dataHead->val,value); /* insert the value */
     dataHead->next = NULL; /* sets the next/prev */
     dataHead->prev = NULL;
@@ -31,7 +31,7 @@ void createData(int value){
 }
 
 /* The function addData insert the given value to data list */
-void addData(int value){
+void addData(unsigned long int value){
     dataNode *node = (dataNode*)malloc(sizeof(dataNode));
 
     if(node == NULL){
@@ -41,7 +41,7 @@ void addData(int value){
     if(node->val == NULL){
         allocateFailed();
     }
-    *(node->val) = 0;
+    resetAlocVal(node->val);
     setVal(node->val,value); /* insert the value */
     node->next = dataHead;
     dataHead->prev = node; 
@@ -51,7 +51,7 @@ void addData(int value){
 }
 
 /* The function insertCmd insert the given value to instruction list and if the value unknowen to fix list 2 */
-void insertCmd(int value, unsigned long int address, char *sym, fileData * fd) {
+void insertCmd(unsigned long int value, unsigned long int address, char *sym, fileData * fd) {
     if(address && sym){ /* the address and the symbol name not empty */
         if(fixHead == NULL)
             createFix(address, sym, fd); /* create fix list */
@@ -67,7 +67,7 @@ void insertCmd(int value, unsigned long int address, char *sym, fileData * fd) {
 }
 
 /* The function createCMD create list of instructions code and set the value */
-void createCmd(int value){
+void createCmd(unsigned long int value){
     cmdHead = (cmdNode*)malloc(sizeof(cmdNode)); /* memo allocation */
 
     if(cmdHead == NULL){
@@ -77,7 +77,7 @@ void createCmd(int value){
     if(cmdHead->val == NULL) {
         allocateFailed();
     }
-    *(cmdHead->val) = 0;
+    resetAlocVal(cmdHead->val);
     setVal(cmdHead->val,value);
     cmdHead->next = NULL; /* set next/prev */
     cmdHead->prev = NULL;
@@ -86,7 +86,7 @@ void createCmd(int value){
 }
 
 /* The function addCMD add new node to cmd list and insert the value */
-void addCMD(int value) {
+void addCMD(unsigned long int value) {
     cmdNode *node = (cmdNode*)malloc(sizeof(cmdNode)); /* memo allocation */
 
     if(node == NULL){
@@ -96,7 +96,7 @@ void addCMD(int value) {
     if(node->val == NULL) {
         allocateFailed();
     }
-    *(node->val) = 0;
+    resetAlocVal(node->val);
     setVal(node->val,value); /* insert the value */
     node->next = cmdHead; /* set next/ prev */
     node->prev = NULL;
@@ -145,7 +145,7 @@ int makeMask(int bitNum){
 }
 
 /* The function setVal insert the given int value to the given pointer 24 bits field */
-void setVal(unsigned char* word, int value){
+void setVal(unsigned char* word, unsigned long int value){
     unsigned char *pWord = word; /* pointer to the start of the field */
     int mask = FIRST_FIELD & value; /* mask the turned on bits */
     *pWord |= mask; /* insert them */
@@ -201,4 +201,12 @@ void clearARE(unsigned char *word){
     mask >>= MOVE_TO_FIRST; /* set the mask to the first bits */
     *(p+1) |= mask; /* insert the on bits */
     *p <<= FIELDS; /* make space for ARE */
+}
+
+void resetAlocVal(unsigned char *val){
+    unsigned char *pointer = val;
+    *pointer = 0;
+    *(++pointer) = 0;
+    *(++pointer) = 0;
+    
 }

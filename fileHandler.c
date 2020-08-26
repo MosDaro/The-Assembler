@@ -88,7 +88,6 @@ void updateOp(int i, char *sym, fileData * fd){
     int j = 0, functionBreak = false;
     symbolNode *curr = symHead; /* sets the pointer to head of symbol table */
     cmdNode *cmdCurr = cmdTail;
-
     if(symHead == NULL || cmdCurr == NULL){
         functionBreak = true;
     }
@@ -229,7 +228,10 @@ void freeSymbolList(){
         symHead = curr;
         curr = curr->next;
     }
-    free(symHead);  
+    free(symHead);
+    symTail = NULL;
+    symHead = NULL;
+    ind = 0;
 }
 
 void freeDataList(){
@@ -257,6 +259,9 @@ void freeDataList(){
         free(dataHead->val);
         free(dataHead);
     }
+    dataHead->val = NULL;
+    dataHead = NULL;
+    dataTail = NULL;
 }
 
 void freeCmdList(){
@@ -284,6 +289,9 @@ void freeCmdList(){
         free(cmdHead->val);
         free(cmdHead);
     }
+    cmdHead->val = NULL;
+    cmdHead = NULL;
+    cmdTail = NULL;
 }
 
 void freeExternList(){
@@ -308,6 +316,8 @@ void freeExternList(){
         }
         free(extHead);
     }
+    extHead = NULL;
+    extTail = NULL;
 }
 
 void freeFixList(){
@@ -332,4 +342,6 @@ void freeFixList(){
         }
         free(fixHead);
     }
+    fixHead = NULL;
+    fixTail = NULL;
 }
