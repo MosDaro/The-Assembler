@@ -75,17 +75,19 @@ cmdNode *cmdHead;
 cmdNode *cmdTail;
 
 /* function prototype */
-void insertData(int value);
-void createData(int value);
-void addData(int value);
-void insertCmd(int value, unsigned long int, char*, fileData * fd);
+void insertData(unsigned long int value);
+void createData(unsigned long int value);
+void addData(unsigned long int value);
+void insertCmd(unsigned long int value, unsigned long int address, char*, fileData * fd);
 void createFix(unsigned long int adrs, char *sym, fileData * fd);
 void addFix(unsigned long int adrs, char *sym, fileData * fd);
 int makeMask(int bitNum);
-void createCmd(int value);
-void addCMD(int value);
-void setVal(unsigned char* word, int value);
+void createCmd(unsigned long int value);
+void addCMD(unsigned long int value);
+void setVal(unsigned char* word, unsigned long int value);
 int setInt(unsigned char* word);
 void clearARE(unsigned char *word);
+void resetAlocVal(unsigned char *val);
 
 #endif
+  
