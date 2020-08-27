@@ -74,8 +74,9 @@ void existence(char *symbol, int numberPass, fileData * fd) {
         }
         curr = curr->next; /* next node */
     }
-    if(numberPass == SECOND_PASS && isFound != true) /* not found symbol */
+    if(numberPass == SECOND_PASS && isFound != true) { /* not found symbol */
         setErrorData(fd, "The symbol mentioned and not defined");
+    }
 }
 
 /* The function updateStable is updating the symbol table after the first pass */

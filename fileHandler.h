@@ -24,7 +24,7 @@ void readFile(char*);
 int firstPass(FILE*, fileData * fd);
 int secondPass(FILE*, fileData * fd);
 void insertMissing(fileData * fd);
-void updateOp(int,char*, fileData * fd);
+void updateOp(fixNode * fixNode, fileData * fd);
 void createObject(char*);
 void createEntries(char*);
 void createExtern(char*);
