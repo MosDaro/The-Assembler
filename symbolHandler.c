@@ -6,12 +6,24 @@ extern char * regList[];
 
 /* The function checkSymbol check if the symbol valid */
 void checkSymbol(char *symbol, int numberPass, fileData * fd){
-    if(numberPass == FIRST_PASS) { /* for first pass */
-        syntaxCheck(symbol, fd); /* check  the syntax */
+    if(checkSymbolLen(symbol, fd)){
+        if(numberPass == FIRST_PASS) { /* for first pass */
+            syntaxCheck(symbol, fd); /* check  the syntax */
+        }
+        if(!fd->isHasError) {
+            existence(symbol, numberPass, fd); /* check existence */
+        }
     }
-    if(!fd->isHasError) {
-        existence(symbol, numberPass, fd); /* check existence */
+}
+
+int checkSymbolLen(char * symbol, fileData *fd){
+    int isValid = true;
+
+    if(strlen(symbol) > SYMBOL_LEN){
+        isValid = false;
+        setErrorData(fd, "The length of symbol over the max");
     }
+    return isValid;
 }
 
 /* The function syntaxCheck checks if the syntax of the symbol valid */
@@ -22,10 +34,7 @@ void syntaxCheck(char *symbol, fileData * fd){
     if(!isalpha(*c)) /* not started with alpha */
         setErrorData(fd, "Symbol must started with letter");
 
-    if(!fd->isHasError && strlen(c) > SYMBOL_LEN) /* symbol length check */
-        setErrorData(fd, "The length of symbol over the max");
-
-    if(!fd->isHasError) {
+    if(!fd->isHasError && checkSymbolLen(c, fd)){
         for (i = 1; i < strlen(symbol) && !fd->isHasError; i++) /* checks the entire symbol */
             if (!isalpha(*(c + i)) && !isdigit(*(c + i))) { /* number or alpha */
                 setErrorData(fd, "Symbol must contain only letter or numbers");

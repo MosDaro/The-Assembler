@@ -188,158 +188,82 @@ void createExtern(char *fName){
 
 /* The function freeAll free all the allocated memory in the program */
 void freeAll(void){
-    int i;
-
-    for(i = 0; i < NUMBER_OF_LISTS; i++){ /* every iteraion free one linked list */
-        switch (i){
-            case SYMBOLE_NODE:
-                freeSymbolList();
-                break;
-            case DATA_NODE:
-                freeDataList();
-                break;
-            case CMD_NODE:
-                freeCmdList();
-                break;
-            case EXTERN_NODE:        
-                freeExternList();
-                break;
-            case FIX_NODE:         
-                freeFixList();
-                break;
-        }
-    }
+    freeSymbolList();
+    freeDataList();
+    freeCmdList();
+    freeExternList();
+    freeFixList();
 }
 
 void freeSymbolList(){
-    symbolNode *curr;
+    symbolNode *temp;
     
-    if(symHead == NULL)
-        return;
-    curr = symHead->next;
-    if(curr == NULL){
+    while(symHead){
+        temp = symHead->next;
         free(symHead);
-        return;
+        symHead = temp;
     }
-    while(curr){
-        free(symHead);
-        symHead = curr;
-        curr = curr->next;
+
+    if(symTail) {
+        symTail = NULL;
     }
-    free(symHead);
-    symTail = NULL;
-    symHead = NULL;
     ind = 0;
 }
 
 void freeDataList(){
-    dataNode *curr;
-    int functionBreaker = false;
+    dataNode *temp;
 
-    if(dataHead == NULL){
-        functionBreaker = true;
-    }
-    if(!functionBreaker){
-            curr = dataHead->next;
-        if(curr == NULL){
-            free(dataHead->val);
-            free(dataHead);
-            functionBreaker = true;
-        }
-    }
-    if(!functionBreaker){
-        while(curr){
-            free(dataHead->val);
-            free(dataHead);
-            dataHead = curr;
-            curr = curr->next;
-        }
+    while(dataHead){
+        temp = dataHead->next;
         free(dataHead->val);
         free(dataHead);
+        dataHead = temp;
     }
-    dataHead->val = NULL;
-    dataHead = NULL;
-    dataTail = NULL;
+
+    if(dataTail) {
+        dataTail = NULL;
+    }
 }
 
 void freeCmdList(){
-    cmdNode *curr;
-    int functionBreaker = false;
+    cmdNode *temp;
 
-    if(cmdHead == NULL){
-        functionBreaker = true;
-    }
-    if(!functionBreaker){
-        curr = cmdHead->next;
-        if(curr == NULL){
-            free(cmdHead->val);
-            free(cmdHead);
-            functionBreaker = true;
-        }
-    }
-    if(!functionBreaker){
-        while(curr){
-            free(cmdHead->val);
-            free(cmdHead);
-            cmdHead = curr;
-            curr = curr->next;
-        }
+    while(cmdHead){
+        temp = cmdHead->next;
         free(cmdHead->val);
         free(cmdHead);
+        cmdHead = temp;
     }
-    cmdHead->val = NULL;
-    cmdHead = NULL;
-    cmdTail = NULL;
+
+    if(cmdTail){
+        cmdTail = NULL;
+    }
 }
 
 void freeExternList(){
-    externNode *curr;
-    int functionBreaker = false;
+    externNode *temp;
 
-    if(extHead == NULL){
-        functionBreaker = true;
-    }
-    if(!functionBreaker){
-        curr = extHead->next;
-        if(curr == NULL){
-            free(extHead);
-            functionBreaker = true;
-        }
-    }
-    if(!functionBreaker){
-        while(curr){
-            free(extHead);
-            extHead = curr;
-            curr = curr->next;
-        }
+    while(extHead){
+        temp = extHead->next;
         free(extHead);
+        extHead = temp;
     }
-    extHead = NULL;
-    extTail = NULL;
+
+    if(extTail){
+        extTail = NULL;
+    }
 }
 
 void freeFixList(){
-    fixNode *curr;
-    int functionBreaker = false;
+    fixNode *temp;
 
-    if(fixHead == NULL){
-        functionBreaker = true;
-    }
-    if(!functionBreaker){
-        curr = fixHead->next;
-        if(curr == NULL){
-            free(fixHead);
-            functionBreaker = true;
-        }
-    }
-    if(!functionBreaker){
-        while(curr){
-            free(fixHead);
-            fixHead = curr;
-            curr = curr->next;
-        }
+    while(fixHead){
+        temp = fixHead->next;
         free(fixHead);
+        fixHead = temp;
     }
-    fixHead = NULL;
-    fixTail = NULL;
+
+    if(fixTail){
+        fixTail = NULL;
+    }
 }

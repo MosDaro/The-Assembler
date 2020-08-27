@@ -25,8 +25,7 @@ typedef struct symbolNode /* symbol table node */
     struct symbolNode *prev; /* prev node */
 }symbolNode;
 
-typedef struct externNode /* extern list node */
-{
+typedef struct externNode { /* extern list node */
     char sym[SYMBOL_LEN]; /* symbol name */
     unsigned long int address; /* the address to save */
     struct externNode *next; /* next node */
@@ -38,6 +37,7 @@ symbolNode *symHead, *symTail;
 
 /* function prototype */
 void checkSymbol(char*,int, fileData * fd);
+int checkSymbolLen(char * symbol, fileData *fd);
 void syntaxCheck(char*, fileData * fd);
 void existence(char*,int, fileData * fd);
 void updateStable(void);

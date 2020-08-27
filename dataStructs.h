@@ -53,8 +53,7 @@ typedef struct cmdNode /* the list of all the instructions values */
     struct cmdNode *prev; /* prev node pointer */
 }cmdNode;
 
-typedef struct fixNode /* the fix list is all the unknown symbols list */
-{
+typedef struct fixNode { /* the fix list is all the unknown symbols list */
     unsigned long int address; /* address of the symbol in instruction list */
     char symbol[SYMBOL_LEN]; /* the name of symbol */
     int line; /* number of line */

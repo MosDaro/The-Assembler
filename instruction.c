@@ -133,7 +133,7 @@ int isValidSpecialCharsBase(char c, fileData * fd){
 
 int getParam(char *params, char * save, fileData * fd){
     char *c = params;
-    char temp[SYMBOL_LEN] = "";
+    char temp[LINE_OVER_MAX_SIZE] = "";
     int i = 0;
 
     BLANKJMP(c) /* ignore blanks */
@@ -143,6 +143,9 @@ int getParam(char *params, char * save, fileData * fd){
         while (*c && !isspace(*c) && *c != ',' && isValidSpecialCharsBase(*c, fd)) { /* insert the first parameter */
             temp[i++] = *c;
             c++;
+        }
+        if(!checkSymbolLen(temp, fd)){
+            save[0] = '\0';
         }
         if(!fd->isHasError) {
             temp[i] = '\0'; /* end of string */
@@ -160,7 +163,7 @@ int getParam(char *params, char * save, fileData * fd){
 /* The function twoParsCheck handle instruction with two parameters and checks if the parameters is valid */
 void twoParsCheck(char *pars, int type, int *word, fileData * fd) {
     char *c;
-    char par1[SYMBOL_LEN]="", par2[SYMBOL_LEN]=""; /* parameters names to save */
+    char par1[LINE_OVER_MAX_SIZE]="", par2[LINE_OVER_MAX_SIZE]=""; /* parameters names to save */
     int i;
 
     i = getParam(pars, par1, fd);
@@ -220,7 +223,7 @@ int noParCheck(char * line, fileData * fd){
 
 /* The function oneParCheck handle instruction with one parameter and checks if the parameter is valid */
 void oneParCheck(char *line, int type, int *word, fileData * fd) {
-    char *c = line, par[SYMBOL_LEN]=""; /* pointer to line, to save the parameter */
+    char *c = line, par[LINE_OVER_MAX_SIZE]=""; /* pointer to line, to save the parameter */
     int i;
 
     BLANKJMP(c) /* ignore blanks */
