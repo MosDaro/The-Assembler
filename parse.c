@@ -8,10 +8,10 @@
  * @param nextIndex
  */
 void getSymbolParam(char * line, char * save, unsigned int * nextIndex, fileData * fd){
-    char copy[SYMBOL_LEN], *temp, *c;
+    char copy[LINE_OVER_MAX_SIZE], *temp, *c;
     unsigned int index = 0;
 
-    save[0] = '\n';
+    save[0] = '\0';
     strcpy(copy, line);
     c = copy;
 
@@ -51,8 +51,7 @@ void getSymbol(char * str, char * save, unsigned int * nextIndex, fileData * fd)
     if (strlen(str + *nextIndex) == strlen(temp)) { /* not found : isn't have label */
         save[0] = '\0';
     }else {
-        if(strlen(temp) > SYMBOL_LEN){
-            setErrorData(fd, "The length of symbol over the max");
+        if(!checkSymbolLen(temp, fd)){
             save[0] = '\0';
         } else {
             strcpy(save, temp);
@@ -114,7 +113,7 @@ int isNeedCheckLine(char * line, fileData * fd){
 * handle two passed the first make the basic code and label-table the second handle the externals
 */
 void lineParse(char *line, int numberPass, fileData * fd){
-    char sym[SYMBOL_LEN] = "", directive[DIRECTIVE_LEN] = "";
+    char sym[LINE_OVER_MAX_SIZE] = "", directive[DIRECTIVE_LEN] = "";
     char *c = line;
     int symbolFlag = false, dir = CODE;
     unsigned int index = 0;
@@ -138,10 +137,15 @@ void lineParse(char *line, int numberPass, fileData * fd){
     }
 
     if(!fd->isHasError && symbolFlag && dir != CODE) {
-        insertSymbol(sym, dir); /* insert the symbol to symbol table */
+        if(dir == EXTERN || dir == ENTRY){
+            fprintf(stderr, "Warning: at line: %d label with extern is without meaning, ignore from label\n", fd->lineNumber);
+        }else {
+            insertSymbol(sym, dir); /* insert the symbol to symbol table */
+        }
     }
+
     c = line + index;
-    if(!fd->isHasError && ((numberPass == FIRST_PASS && dir != ENTRY) || (numberPass == SECOND_PASS && dir == ENTRY))) {
+    if(!fd->isHasError && ((numberPass == FIRST_PASS) || (numberPass == SECOND_PASS && dir == ENTRY))) {
         switch (dir) {
             case DATA:
             case STRING:
@@ -151,10 +155,16 @@ void lineParse(char *line, int numberPass, fileData * fd){
             case EXTERN:
                 getSymbolParam(c, sym, &index, fd);
                 if(!fd->isHasError) {
-                    checkSymbol(sym, numberPass, fd); /* check the symbol */
+                    if(numberPass == FIRST_PASS && dir == ENTRY){ /* if is entry and first pass only check valid len */
+                        checkSymbolLen(sym, fd);
+                    }else {
+                        checkSymbol(sym, numberPass, fd); /* check the symbol */
+                    }
                     if(!fd->isHasError) {
                         if (dir == ENTRY) {
-                            entryMark(sym); /* enter the symbol to entries list */
+                            if(numberPass == SECOND_PASS) {
+                                entryMark(sym); /* enter the symbol to entries list */
+                            }
                         } else { /* only in first around need to handle extern row */
                             insertSymbol(sym, EXTERN); /* insert to symbol table type extern */
                         }

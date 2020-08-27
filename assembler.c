@@ -2,9 +2,10 @@
 
 /*@todo delete before finish*/
 #define DEBUG 0
-int test();
+void test();
 void checkOriginalInput();
 void checkErrorsInput();
+void checkTest2ValidInput();
 int checkValidateCode(char * resFile, char * fileResCmp);
 
 
@@ -29,7 +30,7 @@ int main(int argc, char *argv[]){
 }
 
 
-int test(){
+void test(){
     printf("*****************************\n");
     printf("test mode\n");
     printf("*****************************\n");
@@ -37,12 +38,27 @@ int test(){
 
     checkErrorsInput();
     checkOriginalInput();
+    /*checkTest2ValidInput();*/
 }
 
 void checkOriginalInput(){
-    char srcFile[] = "../tests/test1";
-    char resFile[] = "../tests/test1.ob";
-    char fileResCmp[] = "../tests/test1_p.txt";
+    char srcFile[] = "tests/test1";
+    char resFile[] = "tests/test1.ob";
+    char fileResCmp[] = "tests/test1_p.txt";
+    int isValid;
+
+    readFile(srcFile);
+
+    isValid = checkValidateCode(resFile, fileResCmp);
+    if(isValid){
+        printf("Congratulations file %s is validate\n", srcFile);
+    }
+}
+
+void checkTest2ValidInput(){
+    char srcFile[] = "tests/test_2";
+    char resFile[] = "tests/test_2.ob";
+    char fileResCmp[] = "tests/test_2_p.txt";
     int isValid;
 
     readFile(srcFile);
@@ -54,9 +70,9 @@ void checkOriginalInput(){
 }
 
 void checkErrorsInput(){
-    char srcFile[] = "../tests/test_k";
-    char srcFileRes[] = "../tests/temp.txt";
-    char fileResCmp[] = "../tests/test_p.txt";
+    char srcFile[] = "tests/test_k";
+    char srcFileRes[] = "tests/temp.txt";
+    char fileResCmp[] = "tests/test_p.txt";
     int isValid;
     FILE * f;
     FILE * handle;

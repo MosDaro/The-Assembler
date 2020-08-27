@@ -16,7 +16,5 @@ assembler
 *.ext
 *.ob
 launch.json
-test1.as
-.gitignore
 
 

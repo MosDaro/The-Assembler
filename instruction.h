@@ -6,6 +6,7 @@
 #include <ctype.h>
 #include "symbolHandler.h"
 #include "dataStructs.h"
+#include "parse.h"
 
 #define CMD_LEN 5
 #define NUM_OF_CMD 17
