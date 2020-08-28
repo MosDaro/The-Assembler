@@ -1,4 +1,10 @@
-/* dataStructs.c contain all the structure handling */
+/*
+ * Authors: Moisei Shkil & Shimon Biton
+ * Date: 29/08/20
+ * File Name: dataStructs.c
+ * File Description: contain all the structures maintaining.
+ */
+
 #include "dataStructs.h"
 
 /* The function insertData is insert the given value to data list */

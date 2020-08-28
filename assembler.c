@@ -1,5 +1,26 @@
+/**
+ * Authors: Moisei Shkil & Shimon Biton
+ * Date: 29/08/20
+ * Program Description: The program assembler gets from the user files' names without a suffix in the command line that contains assembly code.
+ *  The assembler runs on each file and checks the syntax. 
+ *  Afterwards it translates each line from the given files to Hexadecimal code which is the Machine code of each line.
+ *  When the file is translated successfully the assembler creates 3 types of out files: 
+ *   * <input file name>.ob = file that contains all the addresses and the Machine code value of each line from the given file.
+ *   * <input file name>.ent = file that contains all the entry symbols in the given input file and their addresses.
+ *   * <input file name>.ext = file that contains all the external symbols in the given input file and their addresses.
+ *  The assembler uses 2 passes:
+ *   * In the first pass, the assembler creates a symbol table and a structure of data and code memory picture and maintains it during the run.
+ *   * In the second pass, the assembler fills the missing values to complete the memory picture, and then creates output files.
+ * 
+ * -----------------------
+ * File Name: assemlber.c
+ * File Description: This file is contains the main function and strat the translation of the each file by loop.
+ * 
+ */
+
 #include "fileHandler.h"
 
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~START DELETE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /*@todo delete before finish*/
 #define DEBUG 0
 void test();
@@ -7,29 +28,42 @@ void checkOriginalInput();
 void checkErrorsInput();
 void checkTest2ValidInput();
 int checkValidateCode(char * resFile, char * fileResCmp);
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~END DELETE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-
+/**
+ * Function: main
+ * --------------
+ * loop the given files and start the checks and the translation of them.
+ * @param argc
+ * @param argv
+ * @return program exit staus
+ */
 int main(int argc, char *argv[]){
-    int i;
-    int filesToCompile = false;
+    int i, filesToCompile = false;
 
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~START DELETE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
     if(DEBUG) {
         test();
         return 1;
     }
-    
-    if(argc == 1) /* the argument only the program name */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~END DELETE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */    
+
+    if(argc == 1){ /* the argument is only the program name */
         fprintf(stderr,"No files to translate.\n");
-    else
+    }
+    else{
         filesToCompile = true;
+    }
         
-    if(filesToCompile)
-        for(i = 1; i < argc; i++) /* runs on each file */
-            readFile(argv[i]); /* deals with the current file */
+    if(filesToCompile){
+        for(i = 1; i < argc; i++){ /* loop through file names */
+            readFile(argv[i]); /* start translation of the current file */
+        }
+    }
     return 0;
-}
+} /* end of main function */
 
-
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~START DELETE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 void test(){
     printf("*****************************\n");
     printf("test mode\n");
@@ -126,3 +160,4 @@ int checkValidateCode(char * resFile, char * fileResCmp){
     fclose(dst);
     return isValid;
 }
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~END DELETE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */

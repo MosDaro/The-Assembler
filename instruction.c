@@ -26,84 +26,67 @@ void cmdParse(char *sym, char *pars, fileData * fd) {
             twoParsCheck(c,MOV,&word, fd); /* handle the parameters */
             break;
         case CMP:
-            word = makeMask(FIRST_BIT_OPCODE); /* sets word with bit 18 ON */
             twoParsCheck(c, CMP, &word, fd); /* handle the parameters */
             break;
         case ADD:
-            /* sets word with bit 19, 3 ON */
-            word = makeMask(SECOND_BIT_OPCODE) | makeMask(FIRST_FNCT);
             twoParsCheck(c, ADD, &word, fd); /* handle the parameters */
             break;
         case SUB:
-            word = makeMask(SECOND_BIT_OPCODE) | makeMask(SECOND_FNCT);
             twoParsCheck(c, SUB, &word, fd); /* handle the parameters */
             break;
         case LEA:
-            word = makeMask(THIRD_BIT_OPCODE); /* sets word with bit 20 ON */
             twoParsCheck(c, LEA, &word, fd); /* handle the parameters */
             break;
         case CLR:
-            /* sets word with bit 18, 20, 3 ON */
-            word = makeMask(FIRST_BIT_OPCODE) | makeMask(THIRD_BIT_OPCODE) | makeMask(FIRST_FNCT);
             oneParCheck(c, CLR, &word, fd); /* handle the parameters */
             break;
         case NOT:
-			/* sets word with bit 18, 20, 4 ON */
-            word = makeMask(FIRST_BIT_OPCODE) | makeMask(THIRD_BIT_OPCODE) | makeMask(SECOND_FNCT);
             oneParCheck(c, NOT, &word, fd); /* handle the parameters */
             break;
         case INC:
-            /* sets word with bit 18, 20, 3, 4 ON */
-            word = makeMask(FIRST_BIT_OPCODE) | makeMask(THIRD_BIT_OPCODE) | makeMask(FIRST_FNCT) | makeMask(SECOND_FNCT);
             oneParCheck(c, INC, &word, fd); /* handle the parameters */
             break;
         case DEC:
-            /* sets word with bit 18, 20, 5 ON */
-            word = makeMask(FIRST_BIT_OPCODE) | makeMask(THIRD_BIT_OPCODE) | makeMask(THIRD_FNCT);
             oneParCheck(c, DEC, &word, fd); /* handle the parameters */
             break;
         case JMP:
-            /* sets word with bit 18, 21, 3 ON */
-            word = makeMask(FIRST_BIT_OPCODE) |  makeMask(FORTH_BIT_OPCODE) | makeMask(FIRST_FNCT);
             oneParCheck(c, JMP, &word, fd); /* handle the parameters */
             break;
         case BNE:
-            /* sets word with bit 18, 21, 4 ON */
-            word = makeMask(FIRST_BIT_OPCODE) | makeMask(FORTH_BIT_OPCODE) | makeMask(SECOND_FNCT);
             oneParCheck(c, BNE, &word, fd); /* handle the parameters */
             break;
         case JSR:
-            /* sets word with bit 18, 21, 3, 4 ON */  
-            word = makeMask(FIRST_BIT_OPCODE) | makeMask(FORTH_BIT_OPCODE) | makeMask(FIRST_FNCT) | makeMask(FORTH_FNCT);
             oneParCheck(c, JSR, &word, fd); /* handle the parameters */
             break;
         case RED:
-            /* sets word with bit 20, 21 ON */ 
-            word = makeMask(THIRD_BIT_OPCODE) | makeMask(FORTH_BIT_OPCODE);
             oneParCheck(c, RED, &word, fd); /* handle the parameters */
             break;
         case PRN:
-            /* sets word with bit 18, 20, 21 ON */ 
-            word = makeMask(FIRST_BIT_OPCODE) | makeMask(THIRD_BIT_OPCODE) | makeMask(FORTH_BIT_OPCODE);
             oneParCheck(c, PRN, &word, fd); /* handle the parameters */
             break;
         case RTS:
             if(noParCheck(c, fd)) {
-                /* sets word with bit 19, 20, 21, 2 ON */
-                word = makeMask(SECOND_BIT_OPCODE) | makeMask(THIRD_BIT_OPCODE) | makeMask(FORTH_BIT_OPCODE) |
-                       makeMask(A_BIT);
-                insertCmd(word, 0, NULL, fd); /* handle the parameters */
+                insertCmd(word, 0, setWordNoPars(&word, RTS), fd); /* handle the parameters */
             }
             break;
         case STOP:
             if(noParCheck(c, fd)) {
-                /* sets word with bit 18, 19, 20, 21, 2 ON */
-                word = makeMask(FIRST_BIT_OPCODE) | makeMask(SECOND_BIT_OPCODE) | makeMask(THIRD_BIT_OPCODE) |
-                       makeMask(FORTH_BIT_OPCODE) | makeMask(A_BIT);
-                insertCmd(word, 0, NULL, fd); /* handle the parameters */
+                insertCmd(word, 0, setWordNoPars(&word, STOP), fd); /* handle the parameters */
             }
             break;
     }
+}
+
+void * setWordNoPars(int *word, int type){
+    if(type == RTS){ /* sets word with bit 19, 20, 21, 2 ON */
+        *word = makeMask(SECOND_BIT_OPCODE) | makeMask(THIRD_BIT_OPCODE);
+        *word |= makeMask(FORTH_BIT_OPCODE) | makeMask(A_BIT);
+    }
+    else if(type == STOP){ /* sets word with bit 18, 19, 20, 21, 2 ON */
+        *word = makeMask(FIRST_BIT_OPCODE) | makeMask(SECOND_BIT_OPCODE);
+        *word |= makeMask(THIRD_BIT_OPCODE) | makeMask(FORTH_BIT_OPCODE) | makeMask(A_BIT);
+    }
+    return NULL;
 }
 
 /* The function checkCmd search instruction number from cmdList and return the number, if not found return 0 */
@@ -166,6 +149,7 @@ void twoParsCheck(char *pars, int type, int *word, fileData * fd) {
     char par1[LINE_OVER_MAX_SIZE]="", par2[LINE_OVER_MAX_SIZE]=""; /* parameters names to save */
     int i;
 
+    setWordTwoPars(word, type); /* handles the word */
     i = getParam(pars, par1, fd);
     if(!fd->isHasError){
         c = pars + i;
@@ -191,6 +175,26 @@ void twoParsCheck(char *pars, int type, int *word, fileData * fd) {
 
     if(!fd->isHasError) {
         handleAddressingTwoParams(type, par1, par2, word, fd);
+    }
+}
+
+void setWordTwoPars(int *word, int type){
+
+    switch (type){
+    case MOV: /* no manipulation on word */
+        break;
+    case CMP: /* sets word with bit 18 ON */
+        *word = makeMask(FIRST_BIT_OPCODE);
+        break;
+    case ADD: /* sets word with bit 19, 3 ON */
+        *word = makeMask(SECOND_BIT_OPCODE) | makeMask(FIRST_FNCT); 
+        break;
+    case SUB: /* sets word with bit 19, 4 ON */
+        *word = makeMask(SECOND_BIT_OPCODE) | makeMask(SECOND_FNCT);
+        break;
+    case LEA: /* sets word with bit 20 ON */
+        *word = makeMask(THIRD_BIT_OPCODE);
+        break;
     }
 }
 
@@ -226,6 +230,7 @@ void oneParCheck(char *line, int type, int *word, fileData * fd) {
     char *c = line, par[LINE_OVER_MAX_SIZE]=""; /* pointer to line, to save the parameter */
     int i;
 
+    setWordOnePar(word,type);
     BLANKJMP(c) /* ignore blanks */
     i = c - line;
     if(!strlen(c)) { /* no length no params */
@@ -241,6 +246,39 @@ void oneParCheck(char *line, int type, int *word, fileData * fd) {
                 handleAddressingOneParam(type, par, word, fd);
             }
         }
+    }
+}
+
+void setWordOnePar(int *word, int type){
+
+    switch (type){
+        case CLR: /* sets word with bit 18, 20, 3 ON */
+            *word = makeMask(FIRST_BIT_OPCODE) | makeMask(THIRD_BIT_OPCODE) | makeMask(FIRST_FNCT);
+            break;
+        case NOT: /* sets word with bit 18, 20, 4 ON */
+            *word = makeMask(FIRST_BIT_OPCODE) | makeMask(THIRD_BIT_OPCODE) | makeMask(SECOND_FNCT);
+            break;
+        case INC: /* sets word with bit 18, 20, 3, 4 ON */
+            *word = makeMask(FIRST_BIT_OPCODE) | makeMask(THIRD_BIT_OPCODE) | makeMask(FIRST_FNCT) | makeMask(SECOND_FNCT);
+            break;
+        case DEC: /* sets word with bit 18, 20, 5 ON */
+            *word = makeMask(FIRST_BIT_OPCODE) | makeMask(THIRD_BIT_OPCODE) | makeMask(THIRD_FNCT);
+            break;
+        case JMP: /* sets word with bit 18, 21, 3 ON */
+            *word = makeMask(FIRST_BIT_OPCODE) |  makeMask(FORTH_BIT_OPCODE) | makeMask(FIRST_FNCT);
+            break;
+        case BNE: /* sets word with bit 18, 21, 4 ON */
+            *word = makeMask(FIRST_BIT_OPCODE) | makeMask(FORTH_BIT_OPCODE) | makeMask(SECOND_FNCT);
+            break;
+        case JSR: /* sets word with bit 18, 21, 3, 4 ON */ 
+            *word = makeMask(FIRST_BIT_OPCODE) | makeMask(FORTH_BIT_OPCODE) | makeMask(FIRST_FNCT) | makeMask(FORTH_FNCT);
+            break;
+        case RED: /* sets word with bit 20, 21 ON */ 
+            *word = makeMask(THIRD_BIT_OPCODE) | makeMask(FORTH_BIT_OPCODE);
+            break;
+        case PRN: /* sets word with bit 18, 20, 21 ON */ 
+            *word = makeMask(FIRST_BIT_OPCODE) | makeMask(THIRD_BIT_OPCODE) | makeMask(FORTH_BIT_OPCODE);
+            break;
     }
 }
 

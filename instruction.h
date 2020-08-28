@@ -22,6 +22,7 @@ int immediateAddress(char*, fileData * fd);
 int directAddress(char*, fileData * fd);
 int relativeAddress(char*, fileData * fd);
 int registerAddress(char*, fileData * fd);
+void * setWordNoPars(int *word, int type);
 
 /**
  * check if is valid char for some of commands
@@ -35,11 +36,13 @@ int getParam(char *params, char * save, fileData * fd);
 void Mov_Add_Sub_Pars(char*,char*, int*, fileData * fd);
 void Cmp_Pars(char*,char*,int*, fileData * fd);
 void Lea_Pars(char*,char*,int*, fileData * fd);
+void setWordTwoPars(int *word, int type);
 
 /* one par */
 void Clr_Not_Inc_Dec_Red_Par(char*,int*, fileData * fd);
 void Jmp_Bne_Jsr_Par(char*,int*, fileData * fd);
 void Prn_Pars(char*,int*, fileData * fd);
+void setWordOnePar(int *word, int type);
 
 void handleAddressingTwoParams(int, char *, char *, int *, fileData * fd);
 void handleAddressingOneParam(int, char *, int *, fileData * fd);
