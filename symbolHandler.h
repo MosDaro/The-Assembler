@@ -32,8 +32,8 @@ typedef struct externNode { /* extern list node */
     struct externNode *prev; /* prev node */
 }externNode;
 
-externNode *extHead, *extTail;
-symbolNode *symHead, *symTail;
+externNode *extHead;
+symbolNode *symHead;
 
 /* function prototype */
 void checkSymbol(char*,int, fileData * fd);

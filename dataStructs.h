@@ -67,11 +67,8 @@ int ind;
 
 /* heads and tails of lists */
 dataNode *dataHead;
-dataNode *dataTail;
 fixNode *fixHead;
-fixNode *fixTail;
 cmdNode *cmdHead;
-cmdNode *cmdTail;
 
 /* function prototype */
 void insertData(unsigned long int value);

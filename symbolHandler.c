@@ -74,8 +74,9 @@ void existence(char *symbol, int numberPass, fileData * fd) {
         }
         curr = curr->next; /* next node */
     }
-    if(numberPass == SECOND_PASS && isFound != true) /* not found symbol */
+    if(numberPass == SECOND_PASS && isFound != true) { /* not found symbol */
         setErrorData(fd, "The symbol mentioned and not defined");
+    }
 }
 
 /* The function updateStable is updating the symbol table after the first pass */
@@ -148,7 +149,6 @@ void creatTable(char *symbol, int dir) {
     }
     symHead->next = NULL; /* node set */
     symHead->prev = NULL;
-    symTail = symHead;
 }
 
 void resetSym(symbolNode *node){
@@ -191,7 +191,6 @@ void createExt(char* symbol, unsigned long int adrs){
     strcpy(extHead->sym,symbol); /* insert the give name */
     extHead->next = NULL; /* set the next/prev */
     extHead->prev = NULL;
-    extTail = extHead;
 }
 
 /* The function addExt insert the given symbol to extern list */
