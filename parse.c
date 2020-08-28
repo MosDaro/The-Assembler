@@ -290,7 +290,7 @@ void dataCheck(char *pars, fileData * fd){
 /* The function stringCheck check the string directive parameters and insert to data list */
 void stringCheck(char *pars, fileData * fd) {
     char *c = pars; /* pointer to parameters */
-    int len = strlen(pars);
+    int len = strlen(pars), i;
     char * stringStart, * stringEnd;
 
     BLANKJMP(c) /* ignore blanks */
@@ -308,9 +308,9 @@ void stringCheck(char *pars, fileData * fd) {
         }else {
             stringEnd = --c; /* address without quotes end string */
             stringStart++; /* ignore quotes start string */
-            strncpy(c, stringStart, stringEnd - stringStart + 1); /* copy real string */
-            for(; *c; c++){
-                insertData(*c);
+            c = stringStart; /* return to the start */
+            for(i = 0; i < stringEnd - stringStart + 1; i++){ /* each iteration insert the cuurent value */
+                insertData(c[i]);
             }
             insertData('\0'); /* the string terminator */
         }
