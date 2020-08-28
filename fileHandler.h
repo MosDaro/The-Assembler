@@ -36,4 +36,9 @@ void freeCmdList(void);
 void freeExternList(void);
 void freeFixList(void);
 
+dataNode * getDataTail();
+symbolNode * getSymbolTail();
+cmdNode * getCmdTail();
+externNode * getExtTail();
+
 #endif

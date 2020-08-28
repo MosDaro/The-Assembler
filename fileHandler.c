@@ -88,7 +88,8 @@ void updateOp(fixNode * fixNode, fileData * fd){
     char * sym = fixNode->symbol;
 
     symbolNode *curr = symHead; /* sets the pointer to head of symbol table */
-    cmdNode *cmdCurr = cmdTail;
+    cmdNode *cmdCurr = getCmdTail();
+
     if(symHead == NULL || cmdCurr == NULL){
         functionBreak = true;
     }
@@ -131,14 +132,66 @@ void createFiles(char *fileName){
     createExtern(fileName); /* create extern file */
 }
 
+dataNode * getDataTail(){
+    dataNode * temp = dataHead;
+
+    if(temp && temp->next){
+        while (temp->next) {
+            temp = temp->next;
+        }
+    }
+
+    return temp;
+}
+
+symbolNode * getSymbolTail(){
+    symbolNode * temp = symHead;
+
+    if(temp && temp->next){
+        while (temp->next) {
+            temp = temp->next;
+        }
+    }
+
+    return temp;
+}
+
+cmdNode * getCmdTail(){
+    cmdNode * temp = cmdHead;
+
+    if(temp && temp->next){
+        while (temp->next) {
+            temp = temp->next;
+        }
+    }
+
+    return temp;
+}
+
+externNode * getExtTail(){
+    externNode * temp = extHead;
+
+    if(temp && temp->next){
+        while (temp->next) {
+            temp = temp->next;
+        }
+    }
+
+    return temp;
+}
+
+
 /* The function create object file that contain all the addresses and their hexadecimal value */
 void createObject(char *fName){
     FILE *fp;
     int i;
     unsigned int fixVal = 0;
     char fileName[FILE_NAME_LEN]="";
-    dataNode *dataCurr = dataTail; /* pointer to the tail of the data list */
-    cmdNode *cmdCurr = cmdTail;
+    dataNode *dataCurr; /* pointer to the tail of the data list */
+    cmdNode *cmdCurr;
+
+    dataCurr = getDataTail();
+    cmdCurr = getCmdTail();
 
     strcpy(fileName, fName); /* insert the file name */
     strcat(fileName, ".ob"); /* add the suffix of object file */
@@ -160,8 +213,8 @@ void createObject(char *fName){
 /* The function createEntries create entry file that contain all the entries symbols and their addresses */
 void createEntries(char *fName){
     FILE *fp;
-    symbolNode *curr = symTail; /* pointer to symbol-table tail */
     char fileName[FILE_NAME_LEN] = "";
+    symbolNode *curr = getSymbolTail(); /* pointer to symbol-table tail */
 
     strcpy(fileName, fName); /* insert the file name */
     strcat(fileName, ".ent"); /* add the suffix .ent */
@@ -177,8 +230,8 @@ void createEntries(char *fName){
 /* The function createExtern create extern file that contain all the extern symbols and their addresses */
 void createExtern(char *fName){
     FILE *fp;
-    externNode *curr = extTail; /* pointer to external list tail */
     char fileName[FILE_NAME_LEN] = "";
+    externNode *curr = getExtTail(); /* pointer to external list tail */
 
     strcpy(fileName, fName); /* insert file name */
     strcat(fileName, ".ext"); /* add the suffix .ext */
@@ -207,10 +260,6 @@ void freeSymbolList(){
         free(symHead);
         symHead = temp;
     }
-
-    if(symTail) {
-        symTail = NULL;
-    }
     ind = 0;
 }
 
@@ -223,10 +272,6 @@ void freeDataList(){
         free(dataHead);
         dataHead = temp;
     }
-
-    if(dataTail) {
-        dataTail = NULL;
-    }
 }
 
 void freeCmdList(){
@@ -238,10 +283,6 @@ void freeCmdList(){
         free(cmdHead);
         cmdHead = temp;
     }
-
-    if(cmdTail){
-        cmdTail = NULL;
-    }
 }
 
 void freeExternList(){
@@ -252,10 +293,6 @@ void freeExternList(){
         free(extHead);
         extHead = temp;
     }
-
-    if(extTail){
-        extTail = NULL;
-    }
 }
 
 void freeFixList(){
@@ -265,9 +302,5 @@ void freeFixList(){
         temp = fixHead->next;
         free(fixHead);
         fixHead = temp;
-    }
-
-    if(fixTail){
-        fixTail = NULL;
     }
 }

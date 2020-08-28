@@ -24,7 +24,6 @@ void createData(unsigned long int value){
     setVal(dataHead->val,value); /* insert the value */
     dataHead->next = NULL; /* sets the next/prev */
     dataHead->prev = NULL;
-    dataTail = dataHead;
     DC++; /* data counter increase */
 }
 
@@ -79,7 +78,6 @@ void createCmd(unsigned long int value){
     setVal(cmdHead->val,value);
     cmdHead->next = NULL; /* set next/prev */
     cmdHead->prev = NULL;
-    cmdTail = cmdHead;
     IC++; /* increase instruction counter */
 }
 
@@ -114,7 +112,6 @@ void createFix(unsigned long int address, char *sym, fileData * fd) {
     fixHead->line = fd->lineNumber; /* insert the number of line where the symbol appearde */
     fixHead->next = NULL; /* set next/prev */
     fixHead->prev = NULL;
-    fixTail = fixHead;
     ind++; /* number of node increase */
 }
 
