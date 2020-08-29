@@ -1,11 +1,15 @@
 /* symbolHandler.c contain all the symbols and symbol-table handling */
 #include "symbolHandler.h"
 
-extern char * cmdList[];
-extern char * regList[];
-
-/* The function checkSymbol check if the symbol valid */
-void checkSymbol(char *symbol, int numberPass, fileData * fd){
+/**
+ * Function: checkSymbol
+ * Function Description: check if the symbol valid
+ * 
+ * @param symbol the given symbol name
+ * @param numberPass the number of the pass
+ * @param fd file information
+ */
+void checkSymbol(char *symbol, int numberPass, fileData *fd){
     if(checkSymbolLen(symbol, fd)){
         if(numberPass == FIRST_PASS) { /* for first pass */
             syntaxCheck(symbol, fd); /* check  the syntax */
@@ -16,6 +20,14 @@ void checkSymbol(char *symbol, int numberPass, fileData * fd){
     }
 }
 
+/**
+ * Function: checkSymbolLen
+ * Function Description: check if the symbol length is valid
+ * 
+ * @param symbol the given symbol name
+ * @param fd file information
+ * @return if the symbol valid of not
+ */
 int checkSymbolLen(char * symbol, fileData *fd){
     int isValid = true;
 
@@ -26,8 +38,16 @@ int checkSymbolLen(char * symbol, fileData *fd){
     return isValid;
 }
 
-/* The function syntaxCheck checks if the syntax of the symbol valid */
+/**
+ * Function: syntaxCheck
+ * Function Description: checks if the syntax of the symbol valid
+ * 
+ * @param symbol the given symbol name
+ * @param fd file information
+ */
 void syntaxCheck(char *symbol, fileData * fd){
+    extern char * cmdList[];
+    extern char * regList[];
     char *c = symbol; /* pointer to symbol */
     int i;
 
@@ -56,7 +76,14 @@ void syntaxCheck(char *symbol, fileData * fd){
     }
 }
 
-/* The function existence check if the symbol exist, for first pass its an error for second its valid */
+/**
+ * Function: existence
+ * Function Description: checks if the symbol exist, for first pass its an error for second its valid
+ * 
+ * @param symbol the given symbol name
+ * @param numberPass the number of the pass
+ * @param fd file information
+ */
 void existence(char *symbol, int numberPass, fileData * fd) {
     int isFound = -1;
     symbolNode *curr = symHead; /* pointer to head of symbol table */
@@ -79,7 +106,10 @@ void existence(char *symbol, int numberPass, fileData * fd) {
     }
 }
 
-/* The function updateStable is updating the symbol table after the first pass */
+/**
+ * Function: updateStable
+ * Function Description: updates the symbol table after the first pass
+ */
 void updateStable(void)
 {
     symbolNode *curr = symHead;
@@ -93,7 +123,13 @@ void updateStable(void)
     }
 }
 
-/* The function insertSymbol is insert the give symbol name and the type if have one to symbol table */
+/**
+ * Function: insertSymbol
+ * Function Description: inserts the give symbol name and the type if have one to symbol table 
+ * 
+ * @param symbol the given symbol name
+ * @param dir the type of symbol
+ */
 void insertSymbol(char *symbol, int dir){
     if(symHead != NULL)
         addSymbol(symbol, dir); /* add symbol to symbol-table */
@@ -101,7 +137,13 @@ void insertSymbol(char *symbol, int dir){
         creatTable(symbol, dir); /* create symbol table */
 }
 
-/* The function addSymbol is insert the given symbol to symbol table */
+/**
+ * Function: addSymbol
+ * Function Description: inserts the given symbol to symbol table
+ * 
+ * @param symbol the given symbol name
+ * @param dir the type of symbol
+ */
 void addSymbol(char *symbol, int dir){
     symbolNode *temp;
 
@@ -128,7 +170,13 @@ void addSymbol(char *symbol, int dir){
     symHead = temp;
 }
 
-/* The function createTable is create a symbol table and insert the given symbol */
+/**
+ * Function: creatTable
+ * Function Description: create a symbol table and insert the given symbol
+ * 
+ * @param symbol the given symbol name
+ * @param dir the type of symbol
+ */
 void creatTable(char *symbol, int dir) {
     symHead = (symbolNode*)malloc(sizeof(symbolNode)); /* memory allocation for the head of table */
     if(!symHead){
@@ -151,6 +199,12 @@ void creatTable(char *symbol, int dir) {
     symHead->prev = NULL;
 }
 
+/**
+ * Function: resetSym
+ * Function Description: reset the symbole nodes' values of linked list
+ * 
+ * @param node the given node to reset
+ */
 void resetSym(symbolNode *node){
     node->value = 0;
     node->type = 0;
@@ -158,7 +212,12 @@ void resetSym(symbolNode *node){
     node->prev = NULL;
 }
 
-/* The function entryMark mark the entry symbols in symbol table */
+/**
+ * Function: entryMark
+ * Function Description: marks the entry symbols in symbol table 
+ * 
+ * @param sym the given symbol to insert
+ */
 void entryMark(char *sym)
 {
     symbolNode *curr = symHead;
@@ -171,7 +230,13 @@ void entryMark(char *sym)
     
 }
 
-/* The function insertExt insert the given symbol to extern list for the extern file creation */
+/**
+ * Function: insertExt
+ * Function Description: inserts the given symbol to extern list for the extern file creation
+ * 
+ * @param sym the given symbol to insert
+ * @param adrs the addres of symbol
+ */
 void insertExt(char* sym, unsigned long int adrs)
 {
     if(extHead == NULL)
@@ -180,7 +245,13 @@ void insertExt(char* sym, unsigned long int adrs)
         addExt(sym,adrs); /* add to exist list */
 }
 
-/* The function createExt create extern-list and insert the given symbol */
+/**
+ * Function: createExt
+ * Function Description: creates extern-list and insert the given symbol
+ * 
+ * @param symbol the given symbol to insert
+ * @param adrs the addres of symbol
+ */
 void createExt(char* symbol, unsigned long int adrs){
     extHead = (externNode*)malloc(sizeof(externNode)); /* memo allocation */
 
@@ -193,7 +264,13 @@ void createExt(char* symbol, unsigned long int adrs){
     extHead->prev = NULL;
 }
 
-/* The function addExt insert the given symbol to extern list */
+/**
+ * Function: addExt
+ * Function Description: insert the given symbol to extern list
+ * 
+ * @param symbol the given symbol to insert
+ * @param adrs the addres of symbol
+ */
 void addExt(char* symbol, unsigned long int adrs){
     externNode *node = (externNode*)malloc(sizeof(externNode)); /* memo allocation */
 

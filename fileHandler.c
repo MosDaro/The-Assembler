@@ -1,7 +1,13 @@
 /* fileHandler.c is contain all the files handling */
 #include "fileHandler.h"
 
-
+/**
+ * Function: resetFileDataStruct
+ * Function Description: reset the values of the struct
+ * 
+ * @param err the error message
+ * @param fileName the given file name
+ */
 void resetFileDataStruct(fileData * err, char * fileName){
     strcpy(err->fileName, fileName);
     err->lineNumber = 1;
@@ -9,7 +15,12 @@ void resetFileDataStruct(fileData * err, char * fileName){
     err->isHasError = false;
 }
 
-/* The function readFile handle the given file, parse him and make an output files */
+/**
+ * Function: readFile
+ * Function Description: handle the given file, parse him and make an output files
+ * 
+ * @param file the file name
+ */
 void readFile(char *file){
     char fileName[FILE_NAME_LEN] = "";
     fileData err;
@@ -28,7 +39,14 @@ void readFile(char *file){
     fclose(fp); /* close the current file */
 }
 
-/* The function firstPass checks the file line by line and making the basic machine code and symbol-table */
+/**
+ * Function: readFile
+ * Function Description: checks the file line by line and making the basic machine code and symbol-table
+ * 
+ * @param fp file pointer
+ * @param fd follow the data about the file, line and errors
+ * @return if error accours return 0 else 1
+ */
 int firstPass(FILE *fp, fileData * fd){
     char line[LINE_OVER_MAX_SIZE]="";
     int isPassOk = true;
@@ -47,7 +65,14 @@ int firstPass(FILE *fp, fileData * fd){
     return isPassOk;
 }
 
-/* The function secondPass complete the missing code and tag the extern symbols */
+/**
+ * Function: secondPass
+ * Function Description: completes the missing code and tag the extern symbols
+ * 
+ * @param fp file pointer
+ * @param fd follow the data about the file, line and errors
+ * @return if error accours return 0 else 1
+ */
 int secondPass(FILE *fp, fileData * fd){
     char line[LINE_LEN] = "";
     int isPassOk = true;
@@ -67,21 +92,32 @@ int secondPass(FILE *fp, fileData * fd){
     return isPassOk; /* passed the checks */
 }
 
-/* 
-* The function insertMissing is insert all the missing info code(direct address, externs etc..) 
-* using the fix-list that contain all the cells that missing info
-*/
-void insertMissing(fileData * fd){
-    int i;
-    fixNode *curr = fixHead; /* set pointer to fix-list */
 
-    for(i = 0; i < ind && curr; i++){ /* run on fix-list backward, ind is number of nodes in fix-list */
+/**
+ * Function: insertMissing
+ * Function Description: insert all the missing info code(direct address, externs etc..) 
+ *  using the fix-list that contain all the cells that missing info
+ * 
+ * @param fd follow the data about the file, line and errors
+ */
+void insertMissing(fileData * fd){
+    int i, numberOfNode;
+
+    fixNode *curr = fixHead; /* set pointer to fix-list */
+    numberOfNode = fixHead->nodesCount;
+    for(i = 0; i < numberOfNode && curr; i++){ /* run on fix-list backward */
         updateOp(curr, fd); /* update the missing code */
         curr = curr->next; /* set the prev */
     }
 }
 
-/* The function updateOp update the code from given address using symbol-table */
+/**
+ * Function: updateOp
+ * Function Description: updates the code from given address using symbol-table 
+ * 
+ * @param fixNode the poniter to linked list of unkown symbols
+ * @param fd follow the data about the file, line and errors
+ */
 void updateOp(fixNode * fixNode, fileData * fd){
     int j = 0, functionBreak = false;
     int i = fixNode->address;
@@ -125,13 +161,24 @@ void updateOp(fixNode * fixNode, fileData * fd){
     }
 }
 
-/* The function createFiles create object, entry, external files by given name */
+/**
+ * Function: createFiles
+ * Function Description: create object, entry, external files by given name 
+ * 
+ * @param fileName the file name
+ */
 void createFiles(char *fileName){
     createObject(fileName); /* create object file */
     createEntries(fileName); /* create entery file */
     createExtern(fileName); /* create extern file */
 }
 
+/**
+ * Function: getDataTail
+ * Function Description: gets the tail of the data list
+ * 
+ * @return the tail of data list
+ */
 dataNode * getDataTail(){
     dataNode * temp = dataHead;
 
@@ -144,6 +191,12 @@ dataNode * getDataTail(){
     return temp;
 }
 
+/**
+ * Function: getSymbolTail
+ * Function Description: gets the tail of the symbol list
+ * 
+ * @return the tail of symbol list
+ */
 symbolNode * getSymbolTail(){
     symbolNode * temp = symHead;
 
@@ -156,6 +209,12 @@ symbolNode * getSymbolTail(){
     return temp;
 }
 
+/**
+ * Function: getCmdTail
+ * Function Description: gets the tail of the instruction list
+ * 
+ * @return the tail of instruction list
+ */
 cmdNode * getCmdTail(){
     cmdNode * temp = cmdHead;
 
@@ -168,6 +227,12 @@ cmdNode * getCmdTail(){
     return temp;
 }
 
+/**
+ * Function: getExtTail
+ * Function Description: gets the tail of the external list
+ * 
+ * @return the tail of external list
+ */
 externNode * getExtTail(){
     externNode * temp = extHead;
 
@@ -180,8 +245,12 @@ externNode * getExtTail(){
     return temp;
 }
 
-
-/* The function create object file that contain all the addresses and their hexadecimal value */
+/**
+ * Function: createObject
+ * Function Description: create object file that contain all the addresses and their hexadecimal value 
+ * 
+ * @param fName the file name
+ */
 void createObject(char *fName){
     FILE *fp;
     int i;
@@ -210,7 +279,12 @@ void createObject(char *fName){
     fclose(fp);
 }
 
-/* The function createEntries create entry file that contain all the entries symbols and their addresses */
+/**
+ * Function: createEntries
+ * Function Description: creates entry file that contain all the entries symbols and their addresses
+ * 
+ * @param fName the file name
+ */
 void createEntries(char *fName){
     FILE *fp;
     char fileName[FILE_NAME_LEN] = "";
@@ -227,7 +301,12 @@ void createEntries(char *fName){
     fclose(fp);
 }
 
-/* The function createExtern create extern file that contain all the extern symbols and their addresses */
+/**
+ * Function: createExtern
+ * Function Description: create extern file that contain all the extern symbols and their addresses
+ * 
+ * @param fName the file name
+ */
 void createExtern(char *fName){
     FILE *fp;
     char fileName[FILE_NAME_LEN] = "";
@@ -243,8 +322,11 @@ void createExtern(char *fName){
     fclose(fp);
 }
 
-/* The function freeAll free all the allocated memory in the program */
-void freeAll(void){
+/**
+ * Function: freeAll
+ * Function Description: free all the allocated memory in the program
+ */
+void freeAll(){
     freeSymbolList();
     freeDataList();
     freeCmdList();
@@ -252,55 +334,74 @@ void freeAll(void){
     freeFixList();
 }
 
+/**
+ * Function: freeSymbolList
+ * Function Description: free all the allocated memory in the symbol list
+ */
 void freeSymbolList(){
     symbolNode *temp;
     
-    while(symHead){
-        temp = symHead->next;
+    while(symHead){ /* until the node head is null */
+        temp = symHead->next; /* saves the next node */
         free(symHead);
-        symHead = temp;
+        symHead = temp; /* set the head */
     }
-    ind = 0;
 }
 
+/**
+ * Function: freeDataList
+ * Function Description: free all the allocated memory in the data list
+ */
 void freeDataList(){
     dataNode *temp;
 
-    while(dataHead){
-        temp = dataHead->next;
+    while(dataHead){ /* until the node head is null */
+        temp = dataHead->next; /* saves the next node */
         free(dataHead->val);
         free(dataHead);
-        dataHead = temp;
+        dataHead = temp; /* set the head */
     }
 }
 
+/**
+ * Function: freeCmdList
+ * Function Description: free all the allocated memory in the instruction list
+ */
 void freeCmdList(){
     cmdNode *temp;
 
-    while(cmdHead){
-        temp = cmdHead->next;
-        free(cmdHead->val);
+    while(cmdHead){ /* until the node head is null */
+        temp = cmdHead->next; /* saves the next node */
+        free(cmdHead->val); /* free the bitfield */
         free(cmdHead);
-        cmdHead = temp;
+        cmdHead = temp; /* set the head */
     }
 }
 
+/**
+ * Function: freeExternList
+ * Function Description: free all the allocated memory in the external list
+ */
 void freeExternList(){
     externNode *temp;
 
-    while(extHead){
-        temp = extHead->next;
+    while(extHead){ /* until the node head is null */
+        temp = extHead->next; /* saves the next node */
         free(extHead);
-        extHead = temp;
+        extHead = temp; /* set the head */
     }
 }
 
+/**
+ * Function: freeFixList
+ * Function Description: free all the allocated memory in the fixe list
+ */
 void freeFixList(){
     fixNode *temp;
 
-    while(fixHead){
-        temp = fixHead->next;
+    while(fixHead){ /* until the node head is null */
+        temp = fixHead->next; /* saves the next node */
         free(fixHead);
-        fixHead = temp;
+        fixHead = temp; /* set the head */
     }
 }
