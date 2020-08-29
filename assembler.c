@@ -72,7 +72,7 @@ void test(){
 
     checkErrorsInput();
     checkOriginalInput();
-    /*checkTest2ValidInput();*/
+    checkTest2ValidInput();
 }
 
 void checkOriginalInput(){
