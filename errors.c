@@ -6,8 +6,7 @@
 
 /**
  * Function: handleError
- * 
- * prints the given error
+ * Function Description: prints the given error
  * 
  * @param err
  */
@@ -17,9 +16,8 @@ void handleError(fileData err){
 
 
 /**
- * Function:  setErrorData
- * 
- * prepares the error for printing:
+ * Function: setErrorData
+ * Function Description: prepares the error for printing
  * 
  * @param err
  * @param msg
@@ -31,9 +29,8 @@ void setErrorData(fileData *err, char * msg){
 }
 
 /**
- * Function:  allocateFailed 
- *
- * handles the exception of allocation failure:
+ * Function: allocateFailed 
+ * Function Description: handles the exception of allocation failure
  */
 void allocateFailed(){
     freeAll(); /* free the allocated memory at program. */

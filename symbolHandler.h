@@ -10,11 +10,17 @@
 #define SECOND_PASS 2
 #define BLANKJMP(x) while(isspace(*x)) (x)++; /* jump above blanks */
 
+/* Instruction Counter */
 extern int IC;
+
+/* Data Counter */
 extern int DC;
 
+/* symbols types enum */
 typedef enum{SYMBOL_CODE = 1, SYMBOL_DATA = 2, SYMBOL_ENTRY = 4, SYMBOL_EXTERNAL = 8}symbolType;
-typedef struct symbolNode /* symbol table node */
+
+/* symbol table node */
+typedef struct symbolNode 
 {
     char name[SYMBOL_LEN]; /* name of symbol */
     unsigned long int value; /* address of symbol */
@@ -23,29 +29,57 @@ typedef struct symbolNode /* symbol table node */
     struct symbolNode *prev; /* prev node */
 }symbolNode;
 
-typedef struct externNode { /* extern list node */
+/* extern list node */
+typedef struct externNode { 
     char sym[SYMBOL_LEN]; /* symbol name */
     unsigned long int address; /* the address to save */
     struct externNode *next; /* next node */
     struct externNode *prev; /* prev node */
 }externNode;
 
+/* external head linked list */
 externNode *extHead;
+
+/* symbol head linked list */
 symbolNode *symHead;
 
-/* function prototype */
+/* check if the symbol valid */
 void checkSymbol(char*,int, fileData * fd);
+
+/* check if the symbol length is valid */
 int checkSymbolLen(char * symbol, fileData *fd);
+
+/* checks if the syntax of the symbol valid */
 void syntaxCheck(char*, fileData * fd);
+
+/* checks if the symbol exist, for first pass its an error for second its valid */
 void existence(char*,int, fileData * fd);
+
+/* updates the symbol table after the first pass */
 void updateStable(void);
-void insertSymbol(char*, int);
-void addSymbol(char*, int);
-void creatTable(char*, int);
-void entryMark(char*);
-void insertExt(char*, unsigned long int);
-void createExt(char*, unsigned long int);
-void addExt(char*, unsigned long int);
+
+/* inserts the give symbol name and the type if have one to symbol table */
+void insertSymbol(char *symbol, int dir);
+
+/* inserts the given symbol to symbol table */
+void addSymbol(char *symbol, int dir);
+
+/* create a symbol table and insert the given symbol */
+void creatTable(char *symbol, int dir);
+
+/* marks the entry symbols in symbol table */
+void entryMark(char *sym);
+
+/* inserts the given symbol to extern list for the extern file creation */
+void insertExt(char* sym, unsigned long int adrs);
+
+/* creates extern-list and insert the given symbol */
+void createExt(char* symbol, unsigned long int adrs);
+
+/* insert the given symbol to extern list */
+void addExt(char* symbol, unsigned long int adrs);
+
+/* reset the symbole nodes' values of linked list */
 void resetSym(symbolNode *node);
 
 #endif

@@ -4,10 +4,10 @@
 #include <stdio.h>
 #include <string.h>
 
-
 #define FILE_NAME_LEN 30
 #define MSG_LEN 100
 
+/* struct to follow file name, line number and errors */
 typedef struct {
     char fileName[FILE_NAME_LEN];
     int lineNumber;

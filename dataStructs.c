@@ -161,7 +161,7 @@ void createFix(unsigned long int address, char *sym, fileData * fd) {
     fixHead->line = fd->lineNumber; /* insert the number of line where the symbol appearde */
     fixHead->next = NULL; /* set next/prev */
     fixHead->prev = NULL;
-    ind++; /* number of node increase */
+    fixHead->nodesCount = 1; /* number of nodes */
 }
 
 /**
@@ -183,8 +183,8 @@ void addFix(unsigned long int address, char *sym, fileData * fd){
     node->line = fd->lineNumber; /* insert the line number */
     node->next = fixHead; /* set the next/prev */
     fixHead->prev = node; /* set next/prev */
+    node->nodesCount = fixHead->nodesCount + 1; /* number of nodes */
     fixHead = node;
-    ind++; /* number of nodes increase */
 }
 
 /**
