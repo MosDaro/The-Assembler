@@ -1,9 +1,6 @@
 /* symbolHandler.c contain all the symbols and symbol-table handling */
 #include "symbolHandler.h"
 
-extern char * cmdList[];
-extern char * regList[];
-
 /* The function checkSymbol check if the symbol valid */
 void checkSymbol(char *symbol, int numberPass, fileData * fd){
     if(checkSymbolLen(symbol, fd)){
@@ -28,6 +25,8 @@ int checkSymbolLen(char * symbol, fileData *fd){
 
 /* The function syntaxCheck checks if the syntax of the symbol valid */
 void syntaxCheck(char *symbol, fileData * fd){
+    extern char * cmdList[];
+    extern char * regList[];
     char *c = symbol; /* pointer to symbol */
     int i;
 

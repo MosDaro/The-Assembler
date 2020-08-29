@@ -4,7 +4,6 @@
 
 #include <string.h>
 #include <ctype.h>
-#include "symbolHandler.h"
 #include "dataStructs.h"
 #include "parse.h"
 
@@ -46,5 +45,8 @@ void setWordOnePar(int *word, int type);
 
 void handleAddressingTwoParams(int, char *, char *, int *, fileData * fd);
 void handleAddressingOneParam(int, char *, int *, fileData * fd);
+void handleRegister(int *word, int *p, char *par, int target);
+void handleImmidiate(int *word, int *wordPar, int *flag, int *p, char *par);
+void handleDirect(int *word, int *wordPar, int isSource);
 
 #endif

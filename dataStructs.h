@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "errors.h"
+#include "global.h"
 
 #define FIELDS 3
 #define MOVE_TO_FIRST 5
@@ -39,21 +39,24 @@ enum funct{FIRST_FNCT=3, SECOND_FNCT, THIRD_FNCT, FORTH_FNCT, FIFTH_FNCT};
 /* ARE bits in word */
 enum ARE{E_BIT,R_BIT,A_BIT};
 
-typedef struct dataNode /* list of data (all the data of .string and .data directive) */
+/* list of data (all the data of .string and .data directive) */
+typedef struct dataNode
 {
     unsigned char *val; /* bitfiled of 24 bits */
     struct dataNode *next; /* next node pointer */
     struct dataNode *prev; /* prev node pointer */
 }dataNode;
 
-typedef struct cmdNode /* the list of all the instructions values */
+/* the list of all the instructions values */
+typedef struct cmdNode
 {
     unsigned char *val; /* bitfiled of 24 bits */
     struct cmdNode *next; /* next node pointer */
     struct cmdNode *prev; /* prev node pointer */
 }cmdNode;
 
-typedef struct fixNode { /* the fix list is all the unknown symbols list */
+/* the fix list is all the unknown symbols list */
+typedef struct fixNode { 
     unsigned long int address; /* address of the symbol in instruction list */
     char symbol[SYMBOL_LEN]; /* the name of symbol */
     int line; /* number of line */
@@ -61,8 +64,13 @@ typedef struct fixNode { /* the fix list is all the unknown symbols list */
     struct fixNode *prev; /* prev node pointer */
 }fixNode;
 
+/* Data Counter */
 extern int DC;
+
+/* Instruction Counter */
 extern int IC;
+
+/* Global index */
 int ind;
 
 /* heads and tails of lists */

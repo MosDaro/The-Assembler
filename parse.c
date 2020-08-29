@@ -2,9 +2,11 @@
 #include "parse.h"
 
 /**
- * function save the parameter of symbol
- * @param line
- * @param save
+ * Function Name: getSymbolParam
+ * Function Description: saves the parameter of symbol
+ * 
+ * @param line the number of the current line to parse
+ * @param save 
  * @param nextIndex
  */
 void getSymbolParam(char * line, char * save, unsigned int * nextIndex, fileData * fd){
@@ -40,6 +42,15 @@ void getSymbolParam(char * line, char * save, unsigned int * nextIndex, fileData
     }
 }
 
+/**
+ * Function Name: 
+ * Function Description: 
+ * 
+ * @param str
+ * @param save
+ * @param nextInext
+ * @param fd
+ */
 void getSymbol(char * str, char * save, unsigned int * nextIndex, fileData * fd){
     char * temp, copy[LINE_OVER_MAX_SIZE];
 
@@ -62,6 +73,15 @@ void getSymbol(char * str, char * save, unsigned int * nextIndex, fileData * fd)
     }
 }
 
+/**
+ * Function Name: 
+ * Function Description: 
+ * 
+ * @param line
+ * @param save
+ * @param nextInext
+ * @param fd
+ */
 void getDirective(char * line, char * save, unsigned int * nextIndex, fileData * fd){
     char * temp, copy[LINE_OVER_MAX_SIZE];
 
@@ -84,6 +104,14 @@ void getDirective(char * line, char * save, unsigned int * nextIndex, fileData *
     }
 }
 
+/**
+ * Function Name: 
+ * Function Description: 
+ * 
+ * @param line
+ * @param fd
+ * @return 
+ */
 int isNeedCheckLine(char * line, fileData * fd){
     int isValid = true;
     char *lineCopy = line;
@@ -108,81 +136,95 @@ int isNeedCheckLine(char * line, fileData * fd){
     return isValid;
 }
 
-/*
-* The function lineParse parse the given line and making symbol-table and the basic code("word") value
-* handle two passed the first make the basic code and label-table the second handle the externals
-*/
+
+/**
+ * Function Name: 
+ * Function Description: parse the given line and making symbol-table and the basic code("word") value
+ *  handle two passed the first make the basic code and label-table the second handle the externals
+ * 
+ * @param line the current line number
+ * @param numberPass the ccurent pass for the current file
+ * @param fd
+ */
 void lineParse(char *line, int numberPass, fileData * fd){
     char sym[LINE_OVER_MAX_SIZE] = "", directive[DIRECTIVE_LEN] = "";
     char *c = line;
     int symbolFlag = false, dir = CODE;
     unsigned int index = 0;
-
+    int functionBreak = false;
     if(!isNeedCheckLine(line, fd)){
-        return;
+        functionBreak = true;
     }
-
-    if (numberPass == FIRST_PASS){ /* second pass, avoid */
-        getSymbol(c, sym, &index, fd);
-        if(strlen(sym)){
-            symbolFlag = true;
+    if(!functionBreak){
+        if (numberPass == FIRST_PASS){ /* second pass, avoid */
+            getSymbol(c, sym, &index, fd);
+            if(strlen(sym)){
+                symbolFlag = true;
+            }
         }
-    }
 
-    if(!fd->isHasError){
-        getDirective(line, directive, &index, fd);
-        if(!fd->isHasError && strlen(directive)){
-            dir = checkDirective(directive, fd);
+        if(!fd->isHasError){
+            getDirective(line, directive, &index, fd);
+            if(!fd->isHasError && strlen(directive)){
+                dir = checkDirective(directive, fd);
+            }
         }
-    }
 
-    if(!fd->isHasError && symbolFlag && dir != CODE) {
-        if(dir == EXTERN || dir == ENTRY){
-            fprintf(stderr, "Warning: at line: %d label with extern is without meaning, ignore from label\n", fd->lineNumber);
-        }else {
-            insertSymbol(sym, dir); /* insert the symbol to symbol table */
+        if(!fd->isHasError && symbolFlag && dir != CODE) {
+            if(dir == EXTERN || dir == ENTRY) {
+                fprintf(stderr, "Warning: at line: %d label with extern is without meaning, ignore from label\n", fd->lineNumber);
+            }else {
+                insertSymbol(sym, dir); /* insert the symbol to symbol table */
+            }
         }
-    }
 
-    c = line + index;
-    if(!fd->isHasError && ((numberPass == FIRST_PASS) || (numberPass == SECOND_PASS && dir == ENTRY))) {
-        switch (dir) {
-            case DATA:
-            case STRING:
-                dirParse(c, dir, fd); /* parse the directive data (string or numbers) */
-                break;
-            case ENTRY:
-            case EXTERN:
-                getSymbolParam(c, sym, &index, fd);
-                if(!fd->isHasError) {
-                    if(numberPass == FIRST_PASS && dir == ENTRY){ /* if is entry and first pass only check valid len */
-                        checkSymbolLen(sym, fd);
-                    }else {
-                        checkSymbol(sym, numberPass, fd); /* check the symbol */
-                    }
+        c = line + index;
+        if(!fd->isHasError && ((numberPass == FIRST_PASS) || (numberPass == SECOND_PASS && dir == ENTRY))) {
+            switch (dir) {
+                case DATA:
+                case STRING:
+                    dirParse(c, dir, fd); /* parse the directive data (string or numbers) */
+                    break;
+                case ENTRY:
+                case EXTERN:
+                    getSymbolParam(c, sym, &index, fd);
                     if(!fd->isHasError) {
-                        if (dir == ENTRY) {
-                            if(numberPass == SECOND_PASS) {
-                                entryMark(sym); /* enter the symbol to entries list */
+                        if(numberPass == FIRST_PASS && dir == ENTRY){ /* if is entry and first pass only check valid len */
+                            checkSymbolLen(sym, fd);
+                        }else {
+                            checkSymbol(sym, numberPass, fd); /* check the symbol */
+                        }
+                        if(!fd->isHasError) {
+                            if (dir == ENTRY) {
+                                if(numberPass == SECOND_PASS) {
+                                    entryMark(sym); /* enter the symbol to entries list */
+                                }
+                            } else { /* only in first around need to handle extern row */
+                                insertSymbol(sym, EXTERN); /* insert to symbol table type extern */
                             }
-                        } else { /* only in first around need to handle extern row */
-                            insertSymbol(sym, EXTERN); /* insert to symbol table type extern */
                         }
                     }
-                }
-                break;
-            case CODE:
-                if(symbolFlag){ /* symbol appeared */
-                    BLANKJMP(c) /* ignore blanks */
-                    cmdParse(sym, c, fd); /* parse the instruction with symbol */
-                }else {
-                    cmdParse(NULL, c, fd); /* parse the instruction without symbol */
-                }
+                    break;
+                case CODE:
+                    if(symbolFlag){ /* symbol appeared */
+                        BLANKJMP(c) /* ignore blanks */
+                        cmdParse(sym, c, fd); /* parse the instruction with symbol */
+                    }else {
+                        cmdParse(NULL, c, fd); /* parse the instruction without symbol */
+                    }
+            }
         }
     }
 }
 
-/* The function dirParse parse the directive and their parameters */
+/**
+ * Function Name: dirParse
+ * Function Description: parse the directive and their parameters
+ * 
+ * @param line the current line number
+ * @param dir the type of directive
+ * @param fd
+ */
 void dirParse(char *line, int dir, fileData * fd) {
     char *c = line; /* pointer to the line */
     BLANKJMP(c) /* ignore blanks */
@@ -193,7 +235,13 @@ void dirParse(char *line, int dir, fileData * fd) {
     }
 }
 
-/* Checks if the string contain only valid chars */
+/**
+ * Function Name: dataValidation
+ * Function Description: checks if the string contain only valid chars
+ * 
+ * @param str the given string to check
+ * @return if the string valid or not
+ */
 int dataValidation(char *str){
     char *c = str;
     int invalid = false;
@@ -207,6 +255,17 @@ int dataValidation(char *str){
     return invalid;
 }
 
+/**
+ * Function Name: dataCommaValidation
+ * Function Description: checks the validity of the the comma in data parameters and turns on the relevant
+ * 
+ * @param sign flag to negative/positive character
+ * @param comma flag to comma character
+ * @param digit flag to digit character
+ * @param blank flag to blank character
+ * @param insertFlag flag to insert the collected value
+ * @param fd 
+ */
 /* Checks the validity of the the comma in data parameters and turns on the relevant */
 void dataCommaValidation(int *sign, int *comma, int *digit, int *blank, int *insertFlag, fileData * fd){
     if (!fd->isHasError && *comma) { /* two commas */
@@ -220,7 +279,44 @@ void dataCommaValidation(int *sign, int *comma, int *digit, int *blank, int *ins
     *blank = *digit = false; /* reset flags */
 }
 
-/* Checks the validity of the negetive/positive sign in data parameters and turns on the relevant */
+/**
+ * Function: alternativeAtoi
+ * Function Description: converts string to int
+ * Alternative for the function atoi because sometimes atoi makes mistakes.
+ * 
+ * @param str the given string to convert to int
+ * @return the converted string to int
+ */
+int alternativeAtoi(char* str) { 
+    int sign = 1, result = 0, i = 0; 
+    
+    BLANKJMP(str) /* ignores blanks */
+
+    /* determine the sign */
+    if (str[i] == '-' || str[i] == '+') { 
+        sign = 1 - 2 * (str[i++] == '-'); /* negetive assign -1 else 1 */
+    } 
+    /* moves the previous digit forward and insert the new one until end of str */
+    while (isdigit(str[i])) {
+        result = Dozen * result + (str[i++] - '0'); 
+    }
+
+    /* result with the sign */
+    return result * sign; 
+}
+
+/**
+ * Function: dataSignValidation
+ * Function Description: checks the validity of the negetive/positive sign in data parameters and turns on the relevant
+ * 
+ * @param currVal the given string to convert to int
+ * @param sign flag to negative/positive character
+ * @param comma flag to comma character
+ * @param digit flag to digit character
+ * @param blank flag to blank character
+ * @param insertFlag flag to insert the collected value
+ * @param fd the given string to convert to int
+ */
 void dataSignValidation(char *currVal, int *sign, int *comma, int *digit, int *blank, int *insertFlag, fileData * fd){
     if (*blank && *digit) { /* no comma */
         setErrorData(fd, "In data directive parameters there is no comma seprates between numbers");
@@ -232,26 +328,44 @@ void dataSignValidation(char *currVal, int *sign, int *comma, int *digit, int *b
         setErrorData(fd, "In data directive parameters there is double negetive/positive sign");
     }
     if (!fd->isHasError && *insertFlag) {
-        insertData(atoi(currVal)); /* insert the current value */
+        insertData(alternativeAtoi(currVal)); /* insert the current value */
         *insertFlag = false; /* reset flag */
         *sign = true;
     }
 }
 
-/* Checks the validity of the digit in data parameters and turns on the relevant */
+/**
+ * Function: dataDigitValidation
+ * Function Description: checks the validity of the digit in data parameters and turns on the relevant
+ * 
+ * @param currVal the given string to convert to int
+ * @param sign flag to negative/positive character
+ * @param comma flag to comma character
+ * @param digit flag to digit character
+ * @param blank flag to blank character
+ * @param insertFlag flag to insert the collected value
+ * @param fd the given string to convert to int
+ */
 void dataDigitValidation(char *currVal, int *sign, int *comma, int *digit, int *blank, int *insertFlag, fileData * fd){
     if (*digit && *blank) {/* blank separate digits */
         setErrorData(fd, "In data directive parameters blank cannot separate numbers");
     }
     if (!fd->isHasError && *insertFlag) { /* to insert data-list */
-        insertData(atoi(currVal)); /* insert to data-list the current value */
+        insertData(alternativeAtoi(currVal)); /* insert to data-list the current value */
         *insertFlag = false; /* reset flag */
     }
     *sign = *comma = *blank = false; /* reset flags */
     *digit = true;
 }
 
-/* The function dataCheck checks the data parameters using flag for each type of valid char */
+
+/**
+ * Function: dataCheck
+ * Function Description: checks the data parameters using flag for each type of valid char
+ * 
+ * @param pars the given parameters to check
+ * @param fd
+ */
 void dataCheck(char *pars, fileData * fd){
     int digit = false, sign = false, comma = false, blank = false, insertFlag = true; /* flags to check the parameters */
     char *c = pars; /* pointer to the parameters */
@@ -287,7 +401,13 @@ void dataCheck(char *pars, fileData * fd){
     }
 }
 
-/* The function stringCheck check the string directive parameters and insert to data list */
+/**
+ * Function: stringCheck
+ * Function Description: checks the string directive parameters and insert to data list
+ * 
+ * @param pars the given parameters to check
+ * @param fd
+ */
 void stringCheck(char *pars, fileData * fd) {
     char *c = pars; /* pointer to parameters */
     int len = strlen(pars), i;
@@ -317,7 +437,14 @@ void stringCheck(char *pars, fileData * fd) {
     }
 }
 
-/* The function checkDirective check the directive and return the number of directive */
+
+/**
+ * Function: checkDirective
+ * Function Description: checks the directive and return the number of directive
+ * 
+ * @param dir the directive type
+ * @param fd
+ */
 int checkDirective(char *dir, fileData * fd){
     int res = NOT_FOUND;
 

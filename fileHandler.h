@@ -3,7 +3,6 @@
 #define FILE_HANDLER_H
 
 #include "parse.h"
-#include "global.h"
 
 #define IC_START 100
 

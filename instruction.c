@@ -8,70 +8,42 @@ char *regList[] = {"r0","r1","r2","r3","r4","r5","r6","r7"};
 /* The function cmdParse parse the instruction and their parameters */
 void cmdParse(char *sym, char *pars, fileData * fd) {
     char *c = pars , cmd[CMD_LEN] = ""; /* pointer to pars, the instruction name */
-    int i = 0, word = 0;
+    int i = 0, word = 0, type; 
 
     while(!isspace(*c) && *c != '\0'){ /* insert the cmd */
-        cmd[i++] = *c;
-        c++;
+        cmd[i++] = *c++;
     }
 
     if(sym) /* if there is a symbol insert it */
         insertSymbol(sym, CODE); /* code type */
 
-    switch (checkCmd(cmd)){ /* check the instruction and find their type */
+    type = checkCmd(cmd);
+    switch (type){ /* check the instruction and find their type */
         case CMD_NOT_FOUND:
             setErrorData(fd, "Instruction not found");
             break;
         case MOV:
-            twoParsCheck(c,MOV,&word, fd); /* handle the parameters */
-            break;
         case CMP:
-            twoParsCheck(c, CMP, &word, fd); /* handle the parameters */
-            break;
         case ADD:
-            twoParsCheck(c, ADD, &word, fd); /* handle the parameters */
-            break;
         case SUB:
-            twoParsCheck(c, SUB, &word, fd); /* handle the parameters */
-            break;
         case LEA:
-            twoParsCheck(c, LEA, &word, fd); /* handle the parameters */
+            twoParsCheck(c, type, &word, fd); /* handle the parameters */
             break;
         case CLR:
-            oneParCheck(c, CLR, &word, fd); /* handle the parameters */
-            break;
         case NOT:
-            oneParCheck(c, NOT, &word, fd); /* handle the parameters */
-            break;
         case INC:
-            oneParCheck(c, INC, &word, fd); /* handle the parameters */
-            break;
         case DEC:
-            oneParCheck(c, DEC, &word, fd); /* handle the parameters */
-            break;
         case JMP:
-            oneParCheck(c, JMP, &word, fd); /* handle the parameters */
-            break;
         case BNE:
-            oneParCheck(c, BNE, &word, fd); /* handle the parameters */
-            break;
         case JSR:
-            oneParCheck(c, JSR, &word, fd); /* handle the parameters */
-            break;
         case RED:
-            oneParCheck(c, RED, &word, fd); /* handle the parameters */
-            break;
         case PRN:
-            oneParCheck(c, PRN, &word, fd); /* handle the parameters */
+            oneParCheck(c, type, &word, fd); /* handle the parameters */
             break;
         case RTS:
-            if(noParCheck(c, fd)) {
-                insertCmd(word, 0, setWordNoPars(&word, RTS), fd); /* handle the parameters */
-            }
-            break;
         case STOP:
             if(noParCheck(c, fd)) {
-                insertCmd(word, 0, setWordNoPars(&word, STOP), fd); /* handle the parameters */
+                insertCmd(word, 0, setWordNoPars(&word, type), fd); /* handle the parameters */
             }
             break;
     }
@@ -100,7 +72,7 @@ int checkCmd(char *cmd){
         }
     }
 
-    return found; /* not found */
+    return found;
 }
 
 int isValidSpecialCharsBase(char c, fileData * fd){
@@ -111,6 +83,7 @@ int isValidSpecialCharsBase(char c, fileData * fd){
     }else {
         setErrorData(fd, "Special character is not valid in parameters");
     }
+
     return isValid;
 }
 
@@ -271,7 +244,7 @@ void setWordOnePar(int *word, int type){
             *word = makeMask(FIRST_BIT_OPCODE) | makeMask(FORTH_BIT_OPCODE) | makeMask(SECOND_FNCT);
             break;
         case JSR: /* sets word with bit 18, 21, 3, 4 ON */ 
-            *word = makeMask(FIRST_BIT_OPCODE) | makeMask(FORTH_BIT_OPCODE) | makeMask(FIRST_FNCT) | makeMask(FORTH_FNCT);
+            *word = makeMask(FIRST_BIT_OPCODE) | makeMask(FORTH_BIT_OPCODE) | makeMask(SECOND_FNCT) | makeMask(FIRST_FNCT);
             break;
         case RED: /* sets word with bit 20, 21 ON */ 
             *word = makeMask(THIRD_BIT_OPCODE) | makeMask(FORTH_BIT_OPCODE);
@@ -409,6 +382,37 @@ int registerAddress(char *par, fileData * fd) {
     return isFoundMatch;
 }
 
+void handleRegister(int *word, int *p, char *par, int isSource){
+    if(isSource){
+        *word |= makeMask(FIRST_ADR_SOUR) | makeMask(SECOND_ADR_SOUR) | (atol(par+1) << FIRST_REG_SOUR);
+    }
+    else{
+        *word |= makeMask(FIRST_ADR_DEST) | makeMask(SECOND_ADR_DEST) | (atol(par+1) << FIRST_REG_DEST);
+        
+    }
+    *word |= makeMask(A_BIT);
+    *p = true; /* param done, flag on */
+}
+
+void handleImmidiate(int *word, int *wordPar, int *flag, int *p, char *par){
+    *word |= makeMask(A_BIT); /* set word with bit 2 on */
+    *wordPar = (atol(par+1) << FIRST_FNCT) | makeMask(A_BIT); /* set the immediate value, move to the right spot and turn on the bit #2 */
+    *flag = true; /* first immediate value known, flag on */
+    *p = true; /* first param done, flag on */
+}
+
+void handleDirect(int *word, int *wordPar, int isSource){
+    if(isSource){
+        *word |= makeMask(FIRST_ADR_SOUR); /* turn on the bits #16, #2 */
+    }
+    else{
+        *word |= makeMask(FIRST_ADR_DEST); /* turn on bits #11, #2 */
+    }
+    *word |= makeMask(A_BIT);
+    if(wordPar)
+        *wordPar = true; /* param defined */
+}
+
 /* hanndle the parameters of instructions mov, add and sub, decide which param is what type and set the word */
 void Mov_Add_Sub_Pars(char *par1, char *par2, int *word, fileData * fd){
     int p1 = 0, p2 = 0; /* first and second params flags */
@@ -422,51 +426,34 @@ void Mov_Add_Sub_Pars(char *par1, char *par2, int *word, fileData * fd){
         setErrorData(fd, "In this instruction the second parameter can't be immediate");
     }
     if(!fd->isHasError && registerAddress(par1, fd) == 1){ /* if first param register handle him */
-        *word |= makeMask(FIRST_ADR_SOUR) | makeMask(SECOND_ADR_SOUR); /* sets the word with bit 16, 17 ON */
-        *word |= makeMask(A_BIT) | (atol(par1+1) << FIRST_REG_SOUR); /* turns A bit, register number moves 13 bits left */
-        p1 = 1; /* first param done, flag on */
+        /* sets the word with bit 16, 17 ON, turns A bit, register number moves 13 bits left */
+        handleRegister(word, &p1, par1, true); /* first param done, flag on */
     }
-    if(!fd->isHasError &&  !p1 && immediateAddress(par1, fd) == 1) { /* if first param not handled check if he immediate */
-		*word |= makeMask(A_BIT); /* set word with bit 2 on */
-        word1 = atol(par1+1); /* set the immediate value */
-		word1 = (word1 << FIRST_FNCT) | makeMask(A_BIT); /* move to the right spot and turn on the bit #2 */
-        flag1 = 1; /* first immediate value known, flag on */
-        p1 = 1; /* first param done, flag on */
+    if(!fd->isHasError &&  !p1 && immediateAddress(par1, fd) == 1) { /* if first param not handled check if he is immediate */
+        handleImmidiate(word, &word1, &flag1, &p1, par1); /* first param done */
     }
     if(!fd->isHasError && !p1 && directAddress(par1, fd) == 1) { /* if param 1 is direct */
-        *word |= makeMask(FIRST_ADR_SOUR) | makeMask(A_BIT); /* turn on the bits #16, #2 */
-        word1 = 1; /* param1 defined */
+        handleDirect(word, &word1, true); /* param1 defined */
     }
     if(!fd->isHasError) {
         if (registerAddress(par2, fd) == 1) { /* second param register */
-            *word |= makeMask(FIRST_ADR_DEST) | makeMask(SECOND_ADR_DEST); /* turn on bits #11, 12# */
-            *word |= (atol(par2 + 1) << FIRST_REG_DEST) |
-                     makeMask(A_BIT); /* move register number to the spot and turn on bit #2 */
-            p2 = 1; /* parameter 2 is done */
+            /* turn on bits #11, 12#, move register number to the spot and turn on bit #2, second param immediate, bit 2 on */
+            handleRegister(word, &p2, par2, false); /* parameter 2 is done */
         } else if (!p2 && immediateAddress(par2, fd) == 1) { /* second param immediate */
-            *word |= makeMask(A_BIT); /* bit 2 on */
-            word2 = (atol(par2 + 1) << FIRST_FNCT) |
-                    makeMask(A_BIT); /* insert the immediate value, move to the spot and bit #2 on */
-            flag2 = 1; /* known value */
-            p2 = 1; /* parameter 2 done */
+            handleImmidiate(word, &word2, &flag2, &p2, par2); /* parameter 2 done */
         } else if (!p2 && directAddress(par2, fd) == 1) { /* second param direct */
-            *word |= makeMask(FIRST_ADR_DEST) | makeMask(A_BIT); /* turn on bits #11, #2 */
-            word2 = 1; /* param2 defined */
+            handleDirect(word, &word2, false); /* param2 defined */
         }
     }
     if(!fd->isHasError) {
         insertCmd(*word, 0, NULL, fd); /* insert to instruction list */
         if (!fd->isHasError && word1) { /* if first param was set */
-            if (flag1) /* known value */
-                insertCmd(word1, 0, NULL, fd); /* insert the param value */
-            else
-                insertCmd(0, IC, par1, fd); /* insert the param value as zero */
+            /* if known value insert the param value else insert the param value as zero */
+            (flag1) ? insertCmd(word1, 0, NULL, fd) : insertCmd(0, IC, par1, fd);
         }
         if (!fd->isHasError && word2) { /* if second param was set */
-            if (flag2) /* known value */
-                insertCmd(word2, 0, NULL, fd); /* insert the param value */
-            else
-                insertCmd(0, IC, par2, fd); /* insert the param value as zero */
+            /* if known value insert the param value else insert the param value as zero */
+            (flag2) ? insertCmd(word2, 0, NULL, fd) : insertCmd(0, IC, par2, fd);
         }
     }
 }
@@ -481,44 +468,32 @@ void Cmp_Pars(char *par1, char *par2, int *word, fileData * fd) {
         setErrorData(fd, "In the instruction cmp the parameters can't be relative address");
     }
     if(!fd->isHasError && registerAddress(par1, fd) == 1) { /* first param is register */
-        *word |= makeMask(FIRST_ADR_SOUR) | makeMask(SECOND_ADR_SOUR); /* turn on bits #16, #17 */
-        *word |= (atol(par1+1) << makeMask(FIRST_REG_SOUR)) | makeMask(A_BIT); /* insert the register num to the spot and turn bit #2 on */
-        p1 = 1; /* param 1 is done */
+        /* turn on bits #16, #17, insert the register num to the spot and turn bit #2 on */
+        handleRegister(word, &p1, par1, true); /* param 1 is done */
     } else if(!fd->isHasError && !p1 && immediateAddress(par1, fd) == 1) { /* first parameter is immidiate */
-        *word |= makeMask(A_BIT); /* bit 2 on */
-        word1 = (atol(par1+1) << FIRST_FNCT) | makeMask(A_BIT); /* insert the immidiate value to the spot and turn on bit #2 */
-        flag1 = 1; /* known value */
-        p1 = 1; /* first param is set */
+        /* bit 2 on, insert the immidiate value to the spot and turn on bit #2 */
+        handleImmidiate(word, &word1, &flag1, &p1, par1); /* first param is set */
     } else if(!fd->isHasError && !p1 && directAddress(par1, fd) == 1) {/* first param is direct */
-        *word |= makeMask(FIRST_ADR_SOUR) | makeMask(A_BIT); /* turn on bits #16, #2 */
-        word1 = 1; /* first word defined */
+        handleDirect(word, &word1, true); /* param1 defined */
     }
     if(!fd->isHasError && registerAddress(par2, fd) == 1) { /* second param is register */
-        *word |= makeMask(FIRST_ADR_DEST) | makeMask(SECOND_ADR_DEST); /* turn on bit #11, #12 */
-        *word |= (atol(par2+1) << FIRST_REG_DEST) | makeMask(A_BIT); /* insert the number of register to the spot and turn bit #2 on */
-        p2 = 1; /* second param is done */ 
+        /* turn on bit #11, #12 insert the number of register to the spot and turn bit #2 on */
+        handleRegister(word, &p2, par2, false); /* second param is done */ 
     } else if(!fd->isHasError && !p2 && immediateAddress(par2, fd) == 1) { /* second param is immidiate */
-        *word |= makeMask(A_BIT); /* bit 2 on */
-        word2 = (atol(par2+1) << FIRST_FNCT) | makeMask(A_BIT); /* insert the immidiate value to the spot and turn bit #2 on */
-        flag2 = 1; /* known vlaue */
-        p2 = 1; /* second param done */
+        /* bit 2 on, insert the immidiate value to the spot and turn bit #2 on */
+        handleImmidiate(word, &word2, &flag2, &p2, par2); /* second param done */
     } else if(!fd->isHasError && !p2 && directAddress(par2, fd) == 1) { /* second param is direct */
-        *word |= makeMask(FIRST_ADR_DEST) | makeMask(A_BIT); /* turn on bits #11, #2 */
-        word2 = 1; /* second param defined */
+        handleDirect(word, &word2, false); /* param2 defined */
     }
     if(!fd->isHasError) {
         insertCmd(*word, 0, NULL, fd); /* insert the instruction word */
         if (word1) { /* if first param defined */
-            if (flag1) /* known value */
-                insertCmd(word1, 0, NULL, fd); /* insert first param value to list */
-            else
-                insertCmd(0, IC, par1, fd); /* insert first param value set to zero */
+            /* if known value insert first param value to list else insert first param value set to zero */
+            (flag1) ? insertCmd(word1, 0, NULL, fd) : insertCmd(0, IC, par1, fd);
         }
         if (word2) { /* if second param defined */
-            if (flag2) /* known value */
-                insertCmd(word2, 0, NULL, fd); /* insert second param value to list */
-            else
-                insertCmd(0, IC, par2, fd); /* insert second param value set to zero */
+            /* if knwon value insert second param value to list else insert second param value set to zero */
+            (flag2) ? insertCmd(word2, 0, NULL, fd) : insertCmd(0, IC, par2, fd);
         }
     }
 }
@@ -533,19 +508,18 @@ void Lea_Pars(char *par1, char *par2, int *word, fileData * fd) {
         setErrorData(fd, "In the instruction lea the first parameter can be only direct address");
     }
     if(!fd->isHasError && directAddress(par1, fd) == 1) { /* first param direct */
-        *word |= makeMask(FIRST_ADR_SOUR) | makeMask(A_BIT); /* turn on bits #16, #2 */
-        word1 = 1; /* first param defined */
+        /* turn on bits #16, #2 */
+        handleDirect(word, &word1, true); /* param1 defined */
     }
     if(!fd->isHasError && (immediateAddress(par2, fd) == 1 || relativeAddress(par2, fd) == 1)) { /* second param not immidate nor relative */
         setErrorData(fd, "The second parameter can be only direct or register address");
     }
     if(!fd->isHasError && registerAddress(par2, fd) == 1) { /* second param register */
-        *word |= makeMask(FIRST_ADR_DEST) | makeMask(SECOND_ADR_DEST); /* turns on bits #11, #12 */
-        *word |= (atol(par2+1) << FIRST_REG_DEST) | makeMask(A_BIT); /* insert register number to the spot and turn on bit #2 */
-        p2 = 1; /* second param done */
+        /* turns on bits #11, #12 insert register number to the spot and turn on bit #2 */
+        handleRegister(word, &p2, par2, false); /* second param is done */
     } else if(!fd->isHasError && !p2 && directAddress(par2, fd) == 1) { /* second param is direct */
-        *word |= makeMask(FIRST_ADR_DEST) | makeMask(A_BIT); /* turns on bits #11, #2 */
-        word2 = 1; /* known value */
+        /* turns on bits #11, #2 */
+        handleDirect(word, &word2, false);
     }
     if(!fd->isHasError) {
         insertCmd(*word, 0, NULL, fd); /* insert instruction value */
@@ -568,12 +542,11 @@ void Clr_Not_Inc_Dec_Red_Par(char *par, int *word, fileData * fd) {
         setErrorData(fd, "In this instruction the parameter can be only directive or register address");
     }
     if(!fd->isHasError && registerAddress(par, fd) == 1) { /* param is register */
-        *word |= makeMask(FIRST_ADR_DEST) | makeMask(SECOND_ADR_DEST) | makeMask(A_BIT); /* turns on bits #11, #12, #2 */
-        *word |= (atol(par+1) << FIRST_REG_DEST); /* insert number of register to the right spot */
-        p1 = 1; /* param done */
+        /* turns on bits #11, #12, #2 insert number of register to the right spot */
+        handleRegister(word, &p1, par, false); /* param is done */
     } else if(!fd->isHasError && !p1 && directAddress(par, fd) == 1) { /* parameter  is direct */
-        *word |= makeMask(FIRST_ADR_DEST) | makeMask(A_BIT); /* turn on bits #11, #2 */
-        word1 = 1; /* parameter defined */
+        /* turn on bits #11, #2 */
+        handleDirect(word, &word1, false); /* parameter defined */
     }
     if(!fd->isHasError) {
         insertCmd(*word, 0, NULL, fd); /* insert instruction word */
@@ -590,8 +563,8 @@ void Jmp_Bne_Jsr_Par(char *par, int *word, fileData * fd) {
         setErrorData(fd, "In this instruction the parameter can be only directive or relative address");
     }
     if(!fd->isHasError && directAddress(par, fd) == 1) { /* direct */
-        *word |= makeMask(FIRST_ADR_DEST) | makeMask(A_BIT); /* turns on bits #11, #2 */
-        p1 = 1; /* parameter done */
+        /* turns on bits #11, #2 */
+        handleDirect(word, NULL, false); /* parameter done */
     } else if(!fd->isHasError && !p1 && relativeAddress(par, fd) == 1) { /* relative */
         *word |= makeMask(SECOND_ADR_DEST) | makeMask(A_BIT); /* turns on bits #12, #2 */
     }
@@ -611,25 +584,20 @@ void Prn_Pars(char *par, int *word, fileData * fd) {
     if(relativeAddress(par, fd) == 1) { /* check if not relative */
         setErrorData(fd, "In the instruction prn the parameter can't be relative address");
     } else if(registerAddress(par, fd) == 1) { /* register */
-        *word |= makeMask(FIRST_ADR_DEST) | makeMask(SECOND_ADR_DEST); /* turns on bits #11, #12 */
-        *word |= (atol(par+1) << FIRST_REG_DEST) | makeMask(A_BIT); /* insert register number to the spot and turn on bit #2 */
-        p1 = 1; /* param  done */
+        /* turns on bits #11, #12 insert register number to the spot and turn on bit #2 */
+        handleRegister(word, &p1, par, false); /* param  done */
     }else if(!p1 && immediateAddress(par, fd) == 1) { /* immidiate */
-        *word |= makeMask(A_BIT); /* turns on bit #2 */
-        word1 = (atol(par+1) << FIRST_FNCT) | makeMask(A_BIT); /* insert the immidaite value to the spot and turns on bit #2 */
-        flag1 = 1; /* known vlaue */
-        p1 = 1; /* param done */
+        /* turns on bit #2 insert the immidaite value to the spot and turns on bit #2 */
+        handleImmidiate(word, &word1, &flag1, &p1, par); /* param done */
     } else if(!p1 && directAddress(par, fd) == 1) { /* direct */
-        *word |= makeMask(FIRST_ADR_DEST) | makeMask(A_BIT); /* turns on bits #11, 2 */
-        word1 = 1; /* param defined */
+        /* turns on bits #11, 2 */
+        handleDirect(word, &word1, false); /* param defined */
     }
     if(!fd->isHasError) {
         insertCmd(*word, 0, NULL, fd); /* insert the instruction word */
         if (word1) { /* param defined */
-            if (flag1) /* known value */
-                insertCmd(word1, 0, NULL, fd); /* insert the value */
-            else
-                insertCmd(0, IC, par, fd); /* insert the value set to zero */
+            /* if known value insert the value else insert the value set to zero */
+            (flag1) ? insertCmd(word1, 0, NULL, fd) : insertCmd(0, IC, par, fd);
         }
     }
 }

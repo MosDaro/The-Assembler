@@ -4,8 +4,6 @@
 
 #include <string.h>
 #include <ctype.h>
-#include "dataStructs.h"
-#include "errors.h"
 #include "instruction.h"
 
 #define FIRST_PASS 1

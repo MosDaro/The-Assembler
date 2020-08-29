@@ -1,6 +1,6 @@
 /* errors.c handle the error count and the errors output */
 #include <stdlib.h>
-#include "errors.h"
+#include "global.h"
 #include "fileHandler.h"
 
 

@@ -22,7 +22,7 @@
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~START DELETE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /*@todo delete before finish*/
-#define DEBUG 0
+#define DEBUG 1
 void test();
 void checkOriginalInput();
 void checkErrorsInput();
@@ -34,8 +34,8 @@ int checkValidateCode(char * resFile, char * fileResCmp);
  * Function: main
  * --------------
  * loop the given files and start the checks and the translation of them.
- * @param argc
- * @param argv
+ * @param argc arguments count
+ * @param argv arguments values
  * @return program exit staus
  */
 int main(int argc, char *argv[]){
