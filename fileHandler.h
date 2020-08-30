@@ -77,7 +77,4 @@ symbolNode * getSymbolTail(void);
 /* return the tail of the instruction list */
 cmdNode * getCmdTail(void);
 
-/* return the tail of the external list */
-externNode * getExtTail(void);
-
 #endif
