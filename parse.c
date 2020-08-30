@@ -174,6 +174,7 @@ void lineParse(char *line, int numberPass, fileData * fd){
         if(!fd->isHasError && symbolFlag && dir != CODE) {
             if(dir == EXTERN || dir == ENTRY) {
                 fprintf(stderr, "Warning: at line: %d label with extern is without meaning, ignore from label\n", fd->lineNumber);
+                sym[0] = '\0';
             }else {
                 insertSymbol(sym, dir); /* insert the symbol to symbol table */
             }
