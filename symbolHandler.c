@@ -116,8 +116,7 @@ void updateStable(void) {
     symbolNode *curr = symHead;
     if(symHead == NULL) /* no symbol table */
         return;
-    while(curr) /* until null */
-    {
+    while(curr) { /* until null */
         if(curr->type & SYMBOL_DATA) /* if the symbol type data we update the value */
             curr->value += IC;
         curr = curr->next; /* next node */

@@ -15,7 +15,7 @@
  * @param fd file information
  */
 void getSymbolParam(char * line, char * save, unsigned int * nextIndex, fileData * fd){
-    char copy[LINE_OVER_MAX_SIZE], *temp, *c;
+    char copy[LINE_LEN], *temp, *c;
     unsigned int index = 0;
 
     save[0] = '\0';
@@ -56,7 +56,7 @@ void getSymbolParam(char * line, char * save, unsigned int * nextIndex, fileData
  * @param fd file information
  */
 void getSymbol(char * str, char * save, unsigned int * nextIndex, fileData * fd){
-    char * temp, copy[LINE_OVER_MAX_SIZE];
+    char * temp, copy[LINE_LEN];
 
     strcpy(copy, str);
     temp = copy;
@@ -86,7 +86,7 @@ void getSymbol(char * str, char * save, unsigned int * nextIndex, fileData * fd)
  * @param fd file information
  */
 void getDirective(char * line, char * save, unsigned int * nextIndex, fileData * fd){
-    char * temp, copy[LINE_OVER_MAX_SIZE];
+    char * temp, copy[LINE_LEN];
 
     save[0] = '\0';
     strcpy(copy, &line[*nextIndex]);
@@ -131,7 +131,7 @@ int isNeedCheckLine(char * line, fileData * fd){
         }
     }
 
-    if(isValid && strlen(line) > LINE_LEN){
+    if(isValid && strlen(line) >= (LINE_LEN - 1)){
         setErrorData(fd, "The length of the line is over the max");
         isValid = false;
     }
@@ -147,7 +147,7 @@ int isNeedCheckLine(char * line, fileData * fd){
  * @param fd file information
  */
 void lineParse(char *line, int numberPass, fileData * fd){
-    char sym[LINE_OVER_MAX_SIZE] = "", directive[LINE_OVER_MAX_SIZE] = "";
+    char sym[LINE_LEN] = "", directive[LINE_LEN] = "";
     char *c = line;
     int symbolFlag = false, dir = CODE;
     unsigned int index = 0;
@@ -213,6 +213,7 @@ void lineParse(char *line, int numberPass, fileData * fd){
                     }else {
                         cmdParse(NULL, c, fd); /* parse the instruction without symbol */
                     }
+                    break;
             }
         }
     }

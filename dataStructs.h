@@ -46,14 +46,14 @@ typedef struct dataNode {
 }dataNode;
 
 /* the list of all the instructions values */
-typedef struct {
+typedef struct cmdNode {
     unsigned char *val; /* bitfiled of 24 bits */
     struct cmdNode *next; /* next node pointer */
     struct cmdNode *prev; /* prev node pointer */
 }cmdNode;
 
 /* the fix list is all the unknown symbols list */
-typedef struct {
+typedef struct fixNode {
     unsigned long int address; /* address of the symbol in instruction list */
     char symbol[SYMBOL_LEN]; /* the name of symbol */
     int line; /* number of line */

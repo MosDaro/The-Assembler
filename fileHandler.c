@@ -51,13 +51,13 @@ void readFile(char *file){
  * @return if error occurs return 0 else 1
  */
 int firstPass(FILE *fp, fileData * fd){
-    char line[LINE_OVER_MAX_SIZE]="";
+    char line[LINE_LEN]="";
     int isPassOk = true;
 
     IC = 0; /* set the instruction count */
     DC = 0; /* set the data counter */
 
-    while(fgets(line, LINE_OVER_MAX_SIZE, fp) != NULL) { /* read the current file line by line and parse the line */
+    while(fgets(line, LINE_LEN, fp) != NULL) { /* read the current file line by line and parse the line */
         lineParse(line, FIRST_PASS, fd); /* parse the line, "1" means first pass */
         fd->lineNumber++;
         if(fd->isHasError){
@@ -104,12 +104,14 @@ int secondPass(FILE *fp, fileData * fd){
  */
 void insertMissing(fileData * fd){
     int i, numberOfNode;
-
     fixNode *curr = fixHead; /* set pointer to fix-list */
-    numberOfNode = fixHead->nodesCount;
-    for(i = 0; i < numberOfNode && curr; i++){ /* run on fix-list backward */
-        updateOp(curr, fd); /* update the missing code */
-        curr = curr->next; /* set the prev */
+
+    if(curr) {
+        numberOfNode = fixHead->nodesCount;
+        for (i = 0; i < numberOfNode && curr; i++) { /* run on fix-list backward */
+            updateOp(curr, fd); /* update the missing code */
+            curr = curr->next; /* set the prev */
+        }
     }
 }
 

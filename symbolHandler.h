@@ -20,8 +20,7 @@ extern int DC;
 typedef enum{SYMBOL_CODE = 1, SYMBOL_DATA = 2, SYMBOL_ENTRY = 4, SYMBOL_EXTERNAL = 8}symbolType;
 
 /* symbol table node */
-typedef struct symbolNode 
-{
+typedef struct symbolNode {
     char name[SYMBOL_LEN]; /* name of symbol */
     unsigned long int value; /* address of symbol */
     char type; /* the type of the symbol */
