@@ -105,7 +105,7 @@ int secondPass(FILE *fp, fileData * fd){
 void insertMissing(fileData * fd){
     int i, numberOfNode;
     fixNode *curr = fixHead; /* set pointer to fix-list */
-
+    
     if(curr) {
         numberOfNode = fixHead->nodesCount;
         for (i = 0; i < numberOfNode && curr; i++) { /* run on fix-list backward */
@@ -129,21 +129,21 @@ void updateOp(fixNode * fixNode, fileData * fd){
     symbolNode *curr = symHead; /* sets the pointer to head of symbol table */
     cmdNode *cmdCurr = getCmdTail();
 
-    if(symHead == NULL || cmdCurr == NULL){
-        functionBreak = true;
-    }
-    if(!functionBreak){
+    if(cmdCurr){
         while(j < i){
             cmdCurr = cmdCurr->prev;
             j++;
         }
     }
     fd->lineNumber = fixNode->line;
-    if(!functionBreak && *sym == '&') { /* first letter is & */
+    if(*sym == '&') { /* first letter is & */
         existence(sym + 1, SECOND_PASS, fd); /* check existence of the given symbol without the first letter */
-    } else if(!functionBreak)
+    } else
         existence(sym,SECOND_PASS, fd); /* check existence */
-    if(!functionBreak && !fd->isHasError) {
+    if(!fd->isHasError) {
+        if(symHead == NULL || cmdCurr == NULL){
+            functionBreak = true;
+        }
         while (curr) {/* search the given symbol in symbol table */
             if (!functionBreak && !(curr->type & SYMBOL_EXTERNAL) && !strcmp(curr->name, sym)) { /* not extern and match */
                 setVal(cmdCurr->val, curr->value + IC_START); /* insert the value to the word */
@@ -155,6 +155,9 @@ void updateOp(fixNode * fixNode, fileData * fd){
                 insertExt(sym, i); /* insert the external to extern list for later use */
             }
             if (!functionBreak && *sym == '&' && !strcmp(curr->name, sym + 1)) { /* relative address and match */
+                if(*sym == '&' && curr->type & SYMBOL_EXTERNAL) { /* first letter is & */
+                    setErrorData(fd, "You can't execute this instruction on external symbol");
+                }
                 setVal(cmdCurr->val, (curr->value) - i + 1); /* insert the gap value to the word */
                 clearARE(cmdCurr->val); /* move all the bits 3 to the left */
                 *(cmdCurr->val) |= makeMask(A_BIT); /* turn on the A(absolute) bit */

@@ -81,4 +81,7 @@ void addExt(char* symbol, unsigned long int adrs);
 /* reset the symbol nodes' values of linked list */
 void resetSym(symbolNode *node);
 
+/* Checks the existance of the given symbol in extern table */
+int externExistance(char *symbol);
+
 #endif

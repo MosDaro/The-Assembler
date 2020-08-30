@@ -262,7 +262,7 @@ void createExt(char* symbol, unsigned long int adrs){
  * @param symbol the given symbol to insert
  * @param adrs the addres of symbol
  */
-void addExt(char* symbol, unsigned long int adrs){
+void addExt(char *symbol, unsigned long int adrs){
     externNode *node = (externNode*)malloc(sizeof(externNode)); /* memo allocation */
 
     if(node == NULL){
@@ -274,4 +274,22 @@ void addExt(char* symbol, unsigned long int adrs){
     node->prev=NULL;
     extHead->prev = node;
     extHead = node;
+}
+
+/**
+ * Function: externExistance
+ * Function Description: Checks the existance of the given symbol in extern table
+ * @param symbol the given symbol to check
+ * @return if found or not
+ */
+int externExistance(char *symbol){
+    int isFound = false;
+    externNode *curr = extHead; /* pointer to head of extern table */
+    while(curr && !isFound) { /* until end of symbol table */
+        if(!strcmp(curr->sym,symbol)) { /* first pass found match */
+            isFound = true;
+        }
+        curr = curr->next; /* next node */
+    }
+    return isFound;
 }

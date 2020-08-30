@@ -388,6 +388,9 @@ void handleAddressingOneParam(int type, char *par, int *word, fileData * fd){
 		case JMP:
 		case BNE:
 		case JSR:
+            if(*par == '&' && externExistance(par + 1)){
+                setErrorData(fd, "You can't execute this instruction on external symbol");
+            }
 			Jmp_Bne_Jsr_Par(par, word, fd); /* addressing: par: 1,2 */
 			break;
 		case PRN:
