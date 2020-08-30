@@ -22,7 +22,7 @@
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~START DELETE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /*@todo delete before finish*/
-#define DEBUG 1
+#define DEBUG 0
 void test();
 void checkOriginalInput();
 void checkErrorsInput();

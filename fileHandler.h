@@ -44,6 +44,9 @@ void createObject(char *fName);
 /* creates entry file that contain all the entries symbols and their addresses */
 void createEntries(char *fName);
 
+/* return if has data to export to file from list by type external or entry */
+int checkIfHasDataToExport(symbolNode *curr, int type);
+
 /* create extern file that contain all the extern symbols and their addresses */
 void createExtern(char *fName);
 

@@ -272,15 +272,35 @@ void createEntries(char *fName){
     char fileName[FILE_NAME_LEN] = "";
     symbolNode *curr = getSymbolTail(); /* pointer to symbol-table tail */
 
-    strcpy(fileName, fName); /* insert the file name */
-    strcat(fileName, ".ent"); /* add the suffix .ent */
-    FILE_OPEN(fp, fileName, "w") /* open the current file with the given style and sets the pointer */
-    while(curr){ /* print the entrys from symbol table */
-        if(curr->type & SYMBOL_ENTRY)
-            fprintf(fp, "%s %07ld\n", curr->name, curr->value + IC_START); /* name and address */
-        curr = curr->prev; /* prev node */
+    if(checkIfHasDataToExport(curr, SYMBOL_ENTRY)) {
+        strcpy(fileName, fName); /* insert the file name */
+        strcat(fileName, ".ent"); /* add the suffix .ent */
+        FILE_OPEN(fp, fileName, "w") /* open the current file with the given style and sets the pointer */
+        while (curr) { /* print the entrys from symbol table */
+            if (curr->type & SYMBOL_ENTRY)
+                fprintf(fp, "%s %07ld\n", curr->name, curr->value + IC_START); /* name and address */
+            curr = curr->prev; /* prev node */
+        }
+        fclose(fp);
     }
-    fclose(fp);
+}
+
+/**
+ * Function: checkIfHasDataToExport
+ * Function Description: return if has data to export to file from list by type external or entry
+ * @param curr node of symbol list
+ * @param type type to check
+ * @return true if has data to export to file
+ */
+int checkIfHasDataToExport(symbolNode *curr, int type){
+    int isHasSomeExport = false;
+    while(curr && !isHasSomeExport){
+        if(curr->type & type){
+            isHasSomeExport = true;
+        }
+        curr = curr->prev;
+    }
+    return isHasSomeExport;
 }
 
 /**
@@ -293,14 +313,16 @@ void createExtern(char *fName){
     char fileName[FILE_NAME_LEN] = "";
     externNode *curr = extHead; /* pointer to external list tail */
 
-    strcpy(fileName, fName); /* insert file name */
-    strcat(fileName, ".ext"); /* add the suffix .ext */
-    FILE_OPEN(fp, fileName, "w") /* open the current file with the given style and sets the pointer */
-    while(curr){ /* run on extern list */
-        fprintf(fp, "%s %07ld\n", curr->sym, curr->address + IC_START); /* name and address */
-        curr = curr->next; /* prev node */
+    if(curr) {
+        strcpy(fileName, fName); /* insert file name */
+        strcat(fileName, ".ext"); /* add the suffix .ext */
+        FILE_OPEN(fp, fileName, "w") /* open the current file with the given style and sets the pointer */
+        while (curr) { /* run on extern list */
+            fprintf(fp, "%s %07ld\n", curr->sym, curr->address + IC_START); /* name and address */
+            curr = curr->next; /* prev node */
+        }
+        fclose(fp);
     }
-    fclose(fp);
 }
 
 /**
