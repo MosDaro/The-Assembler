@@ -298,7 +298,7 @@ int alternativeAtoi(char* str) {
     } 
     /* moves the previous digit forward and insert the new one until end of str */
     while (isdigit(str[i])) {
-        result = Dozen * result + (str[i++] - '0'); 
+        result = TENS * result + (str[i++] - '0'); 
     }
 
     /* result with the sign */

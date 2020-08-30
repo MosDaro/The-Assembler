@@ -7,7 +7,7 @@
 #include "symbolHandler.h"
 
 #define LINE_LEN 82 /* max line len 80 chars + '\n' + '\0' */
-#define Dozen 10
+#define TENS 10 /* to move the digiht left spot */
 
 /* Data Counter */
 extern int DC;
