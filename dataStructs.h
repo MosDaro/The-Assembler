@@ -13,10 +13,7 @@
 #define FIRST_FIELD 255
 #define SECOND_FIELD 65280
 #define THIRD_FIELD 16711680
-#define SYMBOL_LEN 32
-
-/* boolean enum */
-enum {false, true};
+#define SYMBOL_LEN 32 /* max len of symbol */
 
 /* data symbol type enum */
 typedef enum{NOT_FOUND, DATA, STRING, ENTRY, EXTERN, CODE} directiveType;
@@ -76,7 +73,7 @@ extern int IC;
 /* head of linked list of the data values */
 dataNode *dataHead;
 
-/* head of linked list of unkown simbols */
+/* head of linked list of unknown symbols */
 fixNode *fixHead;
 
 /* head of linked list of the instructions values */
@@ -91,7 +88,7 @@ void createData(unsigned long int value);
 /* insert the given value to data list */
 void addData(unsigned long int value);
 
-/* insert the given value to instruction list and if the value unknowen to fix list */
+/* insert the given value to instruction list and if the value unknown to fix list */
 void insertCmd(unsigned long int value, unsigned long int address, char*, fileData * fd);
 
 /* creates fix list and insert the given values to the head */
@@ -112,7 +109,7 @@ void addCMD(unsigned long int value);
 /* inserts the given int value to the given pointer 24 bits field */
 void setVal(unsigned char* word, unsigned long int value);
 
-/* gets pointer of word and insert the value to int variable */
+/* gets pointer of word and insert the value to int variable and return the result of word inserted to int */
 int setInt(unsigned char* word);
 
 /* moves all the bits 3 spots left to make space for ARE */

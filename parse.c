@@ -1,13 +1,18 @@
-/* parse.c contain all the function that parse info from file */
+/**
+ * Authors: Moisei Shkil & Shimon Biton
+ * Date: 29/08/20
+ * File Name: parse.c
+ * File Description: contain all the function that parse info from file.
+ */
 #include "parse.h"
 
 /**
  * Function Name: getSymbolParam
  * Function Description: saves the parameter of symbol
- * 
- * @param line the number of the current line to parse
- * @param save 
- * @param nextIndex
+ * @param line pointer to string with line to parse
+ * @param save pointer to string to save param if valid else empty string
+ * @param nextIndex index start to check in line
+ * @param fd file information
  */
 void getSymbolParam(char * line, char * save, unsigned int * nextIndex, fileData * fd){
     char copy[LINE_OVER_MAX_SIZE], *temp, *c;
@@ -44,12 +49,11 @@ void getSymbolParam(char * line, char * save, unsigned int * nextIndex, fileData
 
 /**
  * Function Name: 
- * Function Description: 
- * 
- * @param str
- * @param save
- * @param nextInext
- * @param fd
+ * Function Description:
+ * @param str pointer to string with line to parse
+ * @param save pointer to string to save param if valid else empty string
+ * @param nextIndex index start to check in line
+ * @param fd file information
  */
 void getSymbol(char * str, char * save, unsigned int * nextIndex, fileData * fd){
     char * temp, copy[LINE_OVER_MAX_SIZE];
@@ -75,12 +79,11 @@ void getSymbol(char * str, char * save, unsigned int * nextIndex, fileData * fd)
 
 /**
  * Function Name: 
- * Function Description: 
- * 
- * @param line
- * @param save
- * @param nextInext
- * @param fd
+ * Function Description:
+ * @param line pointer to string with line to parse
+ * @param save pointer to string to save param if valid else empty string
+ * @param nextIndex index start to check in line
+ * @param fd file information
  */
 void getDirective(char * line, char * save, unsigned int * nextIndex, fileData * fd){
     char * temp, copy[LINE_OVER_MAX_SIZE];
@@ -106,11 +109,10 @@ void getDirective(char * line, char * save, unsigned int * nextIndex, fileData *
 
 /**
  * Function Name: 
- * Function Description: 
- * 
- * @param line
- * @param fd
- * @return 
+ * Function Description:
+ * @param line pointer to string with line to parse
+ * @param fd file information
+ * @return true if need to parse this line
  */
 int isNeedCheckLine(char * line, fileData * fd){
     int isValid = true;
@@ -136,22 +138,21 @@ int isNeedCheckLine(char * line, fileData * fd){
     return isValid;
 }
 
-
 /**
- * Function Name: 
+ * Function Name: lineParse
  * Function Description: parse the given line and making symbol-table and the basic code("word") value
  *  handle two passed the first make the basic code and label-table the second handle the externals
- * 
  * @param line the current line number
- * @param numberPass the ccurent pass for the current file
- * @param fd
+ * @param numberPass the curent pass for the current file
+ * @param fd file information
  */
 void lineParse(char *line, int numberPass, fileData * fd){
-    char sym[LINE_OVER_MAX_SIZE] = "", directive[DIRECTIVE_LEN] = "";
+    char sym[LINE_OVER_MAX_SIZE] = "", directive[LINE_OVER_MAX_SIZE] = "";
     char *c = line;
     int symbolFlag = false, dir = CODE;
     unsigned int index = 0;
     int functionBreak = false;
+
     if(!isNeedCheckLine(line, fd)){
         functionBreak = true;
     }
@@ -220,13 +221,13 @@ void lineParse(char *line, int numberPass, fileData * fd){
 /**
  * Function Name: dirParse
  * Function Description: parse the directive and their parameters
- * 
  * @param line the current line number
  * @param dir the type of directive
- * @param fd
+ * @param fd file information
  */
 void dirParse(char *line, int dir, fileData * fd) {
     char *c = line; /* pointer to the line */
+
     BLANKJMP(c) /* ignore blanks */
     if(dir == DATA){
         dataCheck(c, fd); /* checks the data parameters */
@@ -238,7 +239,6 @@ void dirParse(char *line, int dir, fileData * fd) {
 /**
  * Function Name: dataValidation
  * Function Description: checks if the string contain only valid chars
- * 
  * @param str the given string to check
  * @return if the string valid or not
  */
@@ -258,13 +258,12 @@ int dataValidation(char *str){
 /**
  * Function Name: dataCommaValidation
  * Function Description: checks the validity of the the comma in data parameters and turns on the relevant
- * 
  * @param sign flag to negative/positive character
  * @param comma flag to comma character
  * @param digit flag to digit character
  * @param blank flag to blank character
  * @param insertFlag flag to insert the collected value
- * @param fd 
+ * @param fd file information
  */
 /* Checks the validity of the the comma in data parameters and turns on the relevant */
 void dataCommaValidation(int *sign, int *comma, int *digit, int *blank, int *insertFlag, fileData * fd){
@@ -283,7 +282,6 @@ void dataCommaValidation(int *sign, int *comma, int *digit, int *blank, int *ins
  * Function: alternativeAtoi
  * Function Description: converts string to int
  * Alternative for the function atoi because sometimes atoi makes mistakes.
- * 
  * @param str the given string to convert to int
  * @return the converted string to int
  */
@@ -307,15 +305,14 @@ int alternativeAtoi(char* str) {
 
 /**
  * Function: dataSignValidation
- * Function Description: checks the validity of the negetive/positive sign in data parameters and turns on the relevant
- * 
+ * Function Description: checks the validity of the negative/positive sign in data parameters and turns on the relevant
  * @param currVal the given string to convert to int
  * @param sign flag to negative/positive character
  * @param comma flag to comma character
  * @param digit flag to digit character
  * @param blank flag to blank character
  * @param insertFlag flag to insert the collected value
- * @param fd the given string to convert to int
+ * @param fd file information
  */
 void dataSignValidation(char *currVal, int *sign, int *comma, int *digit, int *blank, int *insertFlag, fileData * fd){
     if (*blank && *digit) { /* no comma */
@@ -337,14 +334,13 @@ void dataSignValidation(char *currVal, int *sign, int *comma, int *digit, int *b
 /**
  * Function: dataDigitValidation
  * Function Description: checks the validity of the digit in data parameters and turns on the relevant
- * 
  * @param currVal the given string to convert to int
  * @param sign flag to negative/positive character
  * @param comma flag to comma character
  * @param digit flag to digit character
  * @param blank flag to blank character
  * @param insertFlag flag to insert the collected value
- * @param fd the given string to convert to int
+ * @param fd file information
  */
 void dataDigitValidation(char *currVal, int *sign, int *comma, int *digit, int *blank, int *insertFlag, fileData * fd){
     if (*digit && *blank) {/* blank separate digits */
@@ -358,13 +354,11 @@ void dataDigitValidation(char *currVal, int *sign, int *comma, int *digit, int *
     *digit = true;
 }
 
-
 /**
  * Function: dataCheck
  * Function Description: checks the data parameters using flag for each type of valid char
- * 
  * @param pars the given parameters to check
- * @param fd
+ * @param fd file information
  */
 void dataCheck(char *pars, fileData * fd){
     int digit = false, sign = false, comma = false, blank = false, insertFlag = true; /* flags to check the parameters */
@@ -403,10 +397,8 @@ void dataCheck(char *pars, fileData * fd){
 
 /**
  * Function: stringCheck
- * Function Description: checks the string directive parameters and insert to data list
- * 
  * @param pars the given parameters to check
- * @param fd
+ * @param fd file information
  */
 void stringCheck(char *pars, fileData * fd) {
     char *c = pars; /* pointer to parameters */
@@ -441,9 +433,8 @@ void stringCheck(char *pars, fileData * fd) {
 /**
  * Function: checkDirective
  * Function Description: checks the directive and return the number of directive
- * 
  * @param dir the directive type
- * @param fd
+ * @param fd file information
  */
 int checkDirective(char *dir, fileData * fd){
     int res = NOT_FOUND;

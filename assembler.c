@@ -14,7 +14,7 @@
  * 
  * -----------------------
  * File Name: assemlber.c
- * File Description: This file is contains the main function and strat the translation of the each file by loop.
+ * File Description: This file is contains the main function and start the translation of the each file by loop.
  * 
  */
 
