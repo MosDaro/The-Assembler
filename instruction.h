@@ -10,6 +10,7 @@
 #define CMD_LEN 5 /* max len of command len */
 #define NUM_OF_CMD 17 /* count of commands this assembly know (first is for unknown) */
 #define NUM_OF_REG 8 /* count of registers use in this assembly */
+#define NUM_OF_DIRECTIVE 4 /* count of registers use in this assembly */
 
 /* parse the instruction and their parameters */
 void cmdParse(char *sym, char *pars, fileData * fd);

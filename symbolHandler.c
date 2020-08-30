@@ -34,7 +34,7 @@ void checkSymbol(char *symbol, int numberPass, fileData *fd){
 int checkSymbolLen(char * symbol, fileData *fd){
     int isValid = true;
 
-    if(strlen(symbol) > SYMBOL_LEN){
+    if(strlen(symbol) >= SYMBOL_LEN){
         isValid = false;
         setErrorData(fd, "The length of symbol over the max");
     }
@@ -50,6 +50,7 @@ int checkSymbolLen(char * symbol, fileData *fd){
 void syntaxCheck(char *symbol, fileData * fd){
     extern char * cmdList[];
     extern char * regList[];
+    extern char * directiveList[];
     char *c = symbol; /* pointer to symbol */
     int i;
 
@@ -72,6 +73,11 @@ void syntaxCheck(char *symbol, fileData * fd){
         }
         for(i = 0; i < NUM_OF_REG && !fd->isHasError; i++){
             if(!strcmp(regList[i], symbol)){
+                setErrorData(fd, "Symbol name can't be reserved word");
+            }
+        }
+        for(i = 0; i < NUM_OF_DIRECTIVE && !fd->isHasError; i++){
+            if(!strcmp(directiveList[i], symbol)){
                 setErrorData(fd, "Symbol name can't be reserved word");
             }
         }
