@@ -19,12 +19,13 @@ char *regList[] = {"r0","r1","r2","r3","r4","r5","r6","r7"};
  * @param fd file information
  */
 void cmdParse(char *sym, char *pars, fileData * fd) {
-    char *c = pars , cmd[CMD_LEN] = ""; /* pointer to pars, the instruction name */
+    char *c = pars , cmd[LINE_LEN] = ""; /* pointer to pars, the instruction name */
     int i = 0, word = 0, type; 
 
     while(!isspace(*c) && *c != '\0'){ /* insert the cmd */
         cmd[i++] = *c++;
     }
+    cmd[i] = '\0';
 
     if(sym) /* if there is a symbol insert it */
         insertSymbol(sym, CODE); /* code type */
@@ -127,7 +128,7 @@ int isValidSpecialCharsBase(char c, fileData * fd){
  */
 int getParam(char *params, char * save, fileData * fd){
     char *c = params;
-    char temp[LINE_OVER_MAX_SIZE] = "";
+    char temp[LINE_LEN] = "";
     int i = 0;
 
     BLANKJMP(c) /* ignore blanks */
@@ -164,7 +165,7 @@ int getParam(char *params, char * save, fileData * fd){
  */
 void twoParsCheck(char *pars, int type, int *word, fileData * fd) {
     char *c;
-    char par1[LINE_OVER_MAX_SIZE]="", par2[LINE_OVER_MAX_SIZE]=""; /* parameters names to save */
+    char par1[LINE_LEN]="", par2[LINE_LEN]=""; /* parameters names to save */
     int i;
 
     setWordTwoPars(word, type); /* handles the word */
@@ -272,7 +273,7 @@ int noParCheck(char * line, fileData * fd){
  * @param fd the file information
  */
 void oneParCheck(char *line, int type, int *word, fileData * fd) {
-    char *c = line, par[LINE_OVER_MAX_SIZE]=""; /* pointer to line, to save the parameter */
+    char *c = line, par[LINE_LEN]=""; /* pointer to line, to save the parameter */
     int i;
 
     setWordOnePar(word,type);

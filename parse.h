@@ -6,8 +6,7 @@
 #include <limits.h>
 #include "symbolHandler.h"
 
-#define LINE_LEN 81 /* max line len */
-#define LINE_OVER_MAX_SIZE 100 /* max line len with safety */
+#define LINE_LEN 82 /* max line len 80 chars + '\n' + '\0' */
 #define Dozen 10
 
 /* Data Counter */

@@ -1,4 +1,4 @@
-;; first pass tester - By @AvivNaaman. Please NOT Re-use this input file in your project.
+;; first pass tester - By @AvivNaaman.
 
 ; label errors
     LABEL: .data -2,-0,9470,+02894,+94,-12

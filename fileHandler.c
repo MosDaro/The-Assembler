@@ -51,13 +51,13 @@ void readFile(char *file){
  * @return if error occurs return 0 else 1
  */
 int firstPass(FILE *fp, fileData * fd){
-    char line[LINE_OVER_MAX_SIZE]="";
+    char line[LINE_LEN]="";
     int isPassOk = true;
 
     IC = 0; /* set the instruction count */
     DC = 0; /* set the data counter */
 
-    while(fgets(line, LINE_OVER_MAX_SIZE, fp) != NULL) { /* read the current file line by line and parse the line */
+    while(fgets(line, LINE_LEN, fp) != NULL) { /* read the current file line by line and parse the line */
         lineParse(line, FIRST_PASS, fd); /* parse the line, "1" means first pass */
         fd->lineNumber++;
         if(fd->isHasError){
@@ -104,12 +104,14 @@ int secondPass(FILE *fp, fileData * fd){
  */
 void insertMissing(fileData * fd){
     int i, numberOfNode;
-
     fixNode *curr = fixHead; /* set pointer to fix-list */
-    numberOfNode = fixHead->nodesCount;
-    for(i = 0; i < numberOfNode && curr; i++){ /* run on fix-list backward */
-        updateOp(curr, fd); /* update the missing code */
-        curr = curr->next; /* set the prev */
+
+    if(curr) {
+        numberOfNode = fixHead->nodesCount;
+        for (i = 0; i < numberOfNode && curr; i++) { /* run on fix-list backward */
+            updateOp(curr, fd); /* update the missing code */
+            curr = curr->next; /* set the prev */
+        }
     }
 }
 
@@ -225,23 +227,6 @@ cmdNode * getCmdTail(){
 }
 
 /**
- * Function: getExtTail
- * Function Description: gets the tail of the external list
- * @return the tail of external list
- */
-externNode * getExtTail(){
-    externNode * temp = extHead;
-
-    if(temp && temp->next){
-        while (temp->next) {
-            temp = temp->next;
-        }
-    }
-
-    return temp;
-}
-
-/**
  * Function: createObject
  * Function Description: create object file that contain all the addresses and their hexadecimal value
  * @param fName the file name
@@ -303,14 +288,14 @@ void createEntries(char *fName){
 void createExtern(char *fName){
     FILE *fp;
     char fileName[FILE_NAME_LEN] = "";
-    externNode *curr = getExtTail(); /* pointer to external list tail */
+    externNode *curr = extHead; /* pointer to external list tail */
 
     strcpy(fileName, fName); /* insert file name */
     strcat(fileName, ".ext"); /* add the suffix .ext */
     FILE_OPEN(fp, fileName, "w") /* open the current file with the given style and sets the pointer */
     while(curr){ /* run on extern list */
         fprintf(fp, "%s %07ld\n", curr->sym, curr->address + IC_START); /* name and address */
-        curr = curr->prev; /* prev node */
+        curr = curr->next; /* prev node */
     }
     fclose(fp);
 }
