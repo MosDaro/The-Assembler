@@ -6,13 +6,13 @@
 #include <string.h>
 #include "global.h"
 
-#define FIELDS 3
-#define MOVE_TO_FIRST 5
-#define ONE_FIELD 8
-#define NUM_BITS 24
-#define FIRST_FIELD 255
-#define SECOND_FIELD 65280
-#define THIRD_FIELD 16711680
+#define FIELDS 3 /* number of fields in 24 bits (word) */
+#define MOVE_TO_FIRST 5 /* to set a mask to the first bits */
+#define ONE_FIELD 8 /* each field in 24 bits (word) */
+#define NUM_BITS 24 /* The number of bits in word */
+#define FIRST_FIELD 255 /* to mask first 8 bits */
+#define SECOND_FIELD 65280 /* to mask second 8 bits */
+#define THIRD_FIELD 16711680 /* to mask third 8 bits */
 #define SYMBOL_LEN 32 /* max len of symbol */
 
 /* data symbol type enum */
