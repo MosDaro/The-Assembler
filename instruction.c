@@ -1,4 +1,9 @@
-/* instruction.c contain all the instruction parse and the word-code handle */
+/**
+ * Authors: Moisei Shkil & Shimon Biton
+ * Date: 29/08/20
+ * File Name: instruction.c
+ * File Description: contain all the instruction parse and the word-code handle.
+ */
 #include "instruction.h"
 
 char *cmdList[] = {"","mov","cmp","add","sub","lea","clr","not","inc","dec","jmp","bne","jsr",
@@ -9,10 +14,9 @@ char *regList[] = {"r0","r1","r2","r3","r4","r5","r6","r7"};
 /**
  * Function: cmdParse
  * Function Description: parse the instruction and their parameters
- * 
  * @param sym symbol name
  * @param pars parameters
- * @param fd file infomation
+ * @param fd file information
  */
 void cmdParse(char *sym, char *pars, fileData * fd) {
     char *c = pars , cmd[CMD_LEN] = ""; /* pointer to pars, the instruction name */
@@ -60,7 +64,6 @@ void cmdParse(char *sym, char *pars, fileData * fd) {
 /**
  * Function: setWordNoPars
  * Function Description: set the word to funct with no parameters
- * 
  * @param word the word to set
  * @param type the funct type
  */
@@ -79,7 +82,6 @@ void * setWordNoPars(int *word, int type){
 /**
  * Function: checkCmd
  * Function Description: search instruction number from cmdList and return the number, if not found return 0
- * 
  * @param cmd the funct to search
  * @return the funct number
  */
@@ -99,7 +101,6 @@ int checkCmd(char *cmd){
 /**
  * Function: isValidSpecialCharsBase
  * Function Description: checks if the given char is valid
- * 
  * @param c the given char
  * @param fd file information
  * @return if valid or not
@@ -118,12 +119,11 @@ int isValidSpecialCharsBase(char c, fileData * fd){
 
 /**
  * Function: getParam
- * Function Description:
- * 
- * @param params the given parameters
- * @param save
- * @param fd file inforemation
- * @return
+ * Function Description: get string and copy param to save string if param is valid
+ * @param params string with parameters for instruction
+ * @param save pointer to string to save param if valid else empty string
+ * @param fd file information
+ * @return Number of characters already read
  */
 int getParam(char *params, char * save, fileData * fd){
     char *c = params;
@@ -138,7 +138,7 @@ int getParam(char *params, char * save, fileData * fd){
             temp[i++] = *c;
             c++;
         }
-        if(!checkSymbolLen(temp, fd)){
+        if(!checkSymbolLen(temp, fd)){ /* check if len is lower from max symbol len because symbol is the longest */
             save[0] = '\0';
         }
         if(!fd->isHasError) {
@@ -157,11 +157,10 @@ int getParam(char *params, char * save, fileData * fd){
 /**
  * Function: twoParsCheck
  * Function Description: handles instruction with two parameters and checks if the parameters is valid
- * 
  * @param pars the given parameters
  * @param type the type of funct
  * @param word the word to set
- * @param fd file inforemation
+ * @param fd file information
  */
 void twoParsCheck(char *pars, int type, int *word, fileData * fd) {
     char *c;
@@ -200,12 +199,10 @@ void twoParsCheck(char *pars, int type, int *word, fileData * fd) {
 /**
  * Function: setWordTwoPars
  * Function Description: sets the word to compatible funct
- * 
  * @param word the word to set
  * @param type the type of funct
  */
 void setWordTwoPars(int *word, int type){
-
     switch (type){
     case MOV: /* no manipulation on word */
         break;
@@ -227,7 +224,6 @@ void setWordTwoPars(int *word, int type){
 /**
  * Function: handleAddressingTwoParams
  * Function Description: handles the groups that have the same addresing in the same parameters
- * 
  * @param type the type of funct
  * @param par1 first parameter
  * @param par2 second parameter
@@ -242,10 +238,10 @@ void handleAddressingTwoParams(int type, char *par1, char *par2, int *word, file
 			Mov_Add_Sub_Pars(par1, par2, word, fd); /* addressing: par1: 0,1,3  par2: 1,3  */
 			break;
 		case CMP:
-			Cmp_Pars(par1, par2, word, fd); /* addressing: par1: 0,1,3  par2: 0,1,3 */
+            cmpPars(par1, par2, word, fd); /* addressing: par1: 0,1,3  par2: 0,1,3 */
 			break;
 		case LEA:
-			Lea_Pars(par1, par2, word, fd); /* addressing: par1: 1  par2: 1,3 */
+            leaPars(par1, par2, word, fd); /* addressing: par1: 1  par2: 1,3 */
 			break;
 	}
 }
@@ -253,7 +249,6 @@ void handleAddressingTwoParams(int type, char *par1, char *par2, int *word, file
 /**
  * Function: noParCheck
  * Function Description: checks if there no parameters
- * 
  * @param line the given line
  * @param fd the file information
  * @return if there is an error
@@ -271,7 +266,6 @@ int noParCheck(char * line, fileData * fd){
 /**
  * Function: oneParCheck
  * Function Description: handle instruction with one parameter and checks if the parameter is valid
- * 
  * @param line the given line
  * @param type the type of funct
  * @param word the word to set
@@ -303,12 +297,10 @@ void oneParCheck(char *line, int type, int *word, fileData * fd) {
 /**
  * Function: setWordOnePar
  * Function Description: sets the word to compatible funct
- * 
  * @param type the type of funct
  * @param word the word to set
  */
 void setWordOnePar(int *word, int type){
-
     switch (type){
         case CLR: /* sets word with bit 18, 20, 3 ON */
             *word = makeMask(FIRST_BIT_OPCODE) | makeMask(THIRD_BIT_OPCODE) | makeMask(FIRST_FNCT);
@@ -343,7 +335,6 @@ void setWordOnePar(int *word, int type){
 /**
  * Function: immediateAddress
  * Function Description: immediate addressing  check (method number 0)
- * 
  * @param par the given parameter
  * @param fd the file information
  * @return if the parameter is valid or not
@@ -378,8 +369,7 @@ int immediateAddress(char *par, fileData * fd){
 
 /**
  * Function: handleAddressingOneParam
- * Function Description: handles the groups that have the same addresing parameter
- * 
+ * Function Description: handles the groups that have the same addressing parameter
  * @param type the type of funct
  * @param par the given parameter
  * @param word the word to set
@@ -400,15 +390,14 @@ void handleAddressingOneParam(int type, char *par, int *word, fileData * fd){
 			Jmp_Bne_Jsr_Par(par, word, fd); /* addressing: par: 1,2 */
 			break;
 		case PRN:
-			Prn_Pars(par, word, fd); /* addressing: par: 0,1,3 */
+			prnPars(par, word, fd); /* addressing: par: 0,1,3 */
 			break;
 	}
 }
 
 /**
- * Function: handleAddressingOneParam
+ * Function: directAddress
  * Function Description: direct addressing check (method number 1)
- * 
  * @param par the given parameter
  * @param fd the file information
  * @return if the parameter is valid or not
@@ -441,7 +430,6 @@ int directAddress(char *par, fileData * fd){
 /**
  * Function: relativeAddress
  * Function Description: direct relative addressing check (method number 2)
- * 
  * @param par the given parameter
  * @param fd the file information
  * @return if the parameter is valid or not
@@ -480,7 +468,6 @@ int relativeAddress(char *par, fileData * fd) {
 /**
  * Function: registerAddress
  * Function Description: register addressing check (method number 3)
- * 
  * @param par the given parameter
  * @param fd the file information
  * @return if the parameter is valid or not
@@ -505,7 +492,6 @@ int registerAddress(char *par, fileData * fd) {
 /**
  * Function: handleRegister
  * Function Description: set the word to compatible register
- * 
  * @param word the word to set
  * @param p flag to determine if the parameter is finished to handle
  * @param par the given parameter
@@ -524,16 +510,15 @@ void handleRegister(int *word, int *p, char *par, int isSource){
 }
 
 /**
- * Function: handleImmidiate
- * Function Description: set the word to immidiate parameter
- * 
+ * Function: handleImmediate
+ * Function Description: set the word to immediate parameter
  * @param word the word to set
- * @param wordPar the immidiate value to set
- * @param flag flag for the immidiate value is first and known
+ * @param wordPar the immediate value to set
+ * @param flag flag for the immediate value is first and known
  * @param p flag that determine if we finished with the parameter
  * @param par the given parameter
  */
-void handleImmidiate(int *word, int *wordPar, int *flag, int *p, char *par){
+void handleImmediate(int *word, int *wordPar, int *flag, int *p, char *par){
     *word |= makeMask(A_BIT); /* set word with bit 2 on */
     *wordPar = (atol(par+1) << FIRST_FNCT) | makeMask(A_BIT); /* set the immediate value, move to the right spot and turn on the bit #2 */
     *flag = true; /* first immediate value known, flag on */
@@ -543,9 +528,8 @@ void handleImmidiate(int *word, int *wordPar, int *flag, int *p, char *par){
 /**
  * Function: handleDirect
  * Function Description: set the word to directive parameter
- * 
  * @param word the word to set
- * @param wordPar the immidiate value to set
+ * @param wordPar the immediate value to set
  * @param isSource flag for source or destination
  */
 void handleDirect(int *word, int *wordPar, int isSource){
@@ -562,8 +546,7 @@ void handleDirect(int *word, int *wordPar, int isSource){
 
 /**
  * Function: Mov_Add_Sub_Pars
- * Function Description: hanndle the parameters of instructions mov, add and sub, decide which param is what type and set the word
- * 
+ * Function Description: handle the parameters of instructions mov, add and sub, decide which param is what type and set the word
  * @param par1 first parameter
  * @param par2 second parameter
  * @param word the word to set
@@ -585,7 +568,7 @@ void Mov_Add_Sub_Pars(char *par1, char *par2, int *word, fileData * fd){
         handleRegister(word, &p1, par1, true); /* first param done, flag on */
     }
     if(!fd->isHasError &&  !p1 && immediateAddress(par1, fd) == 1) { /* if first param not handled check if he is immediate */
-        handleImmidiate(word, &word1, &flag1, &p1, par1); /* first param done */
+        handleImmediate(word, &word1, &flag1, &p1, par1); /* first param done */
     }
     if(!fd->isHasError && !p1 && directAddress(par1, fd) == 1) { /* if param 1 is direct */
         handleDirect(word, &word1, true); /* param1 defined */
@@ -595,7 +578,7 @@ void Mov_Add_Sub_Pars(char *par1, char *par2, int *word, fileData * fd){
             /* turn on bits #11, 12#, move register number to the spot and turn on bit #2, second param immediate, bit 2 on */
             handleRegister(word, &p2, par2, false); /* parameter 2 is done */
         } else if (!p2 && immediateAddress(par2, fd) == 1) { /* second param immediate */
-            handleImmidiate(word, &word2, &flag2, &p2, par2); /* parameter 2 done */
+            handleImmediate(word, &word2, &flag2, &p2, par2); /* parameter 2 done */
         } else if (!p2 && directAddress(par2, fd) == 1) { /* second param direct */
             handleDirect(word, &word2, false); /* param2 defined */
         }
@@ -614,16 +597,15 @@ void Mov_Add_Sub_Pars(char *par1, char *par2, int *word, fileData * fd){
 }
 
 /**
- * Function: Cmp_Pars
- * Function Description: hanndle the parameters of instruction cmp, decide which param is what type and set the word
- * 
+ * Function: cmpPars
+ * Function Description: handle the parameters of instruction cmp, decide which param is what type and set the word
  * @param par1 first parameter
  * @param par2 second parameter
  * @param word the word to set
  * @param fd file information
  */
-void Cmp_Pars(char *par1, char *par2, int *word, fileData * fd) {
-    int p1 = 0, p2 = 0; /* first and second parameters seted flag */
+void cmpPars(char *par1, char *par2, int *word, fileData * fd) {
+    int p1 = 0, p2 = 0; /* first and second parameters set flag */
     int word1 = 0, word2 = 0; /* first and second parameter defined flag */
     int flag1 = 0, flag2 = 0; /* known value flags */
 
@@ -633,18 +615,18 @@ void Cmp_Pars(char *par1, char *par2, int *word, fileData * fd) {
     if(!fd->isHasError && registerAddress(par1, fd) == 1) { /* first param is register */
         /* turn on bits #16, #17, insert the register num to the spot and turn bit #2 on */
         handleRegister(word, &p1, par1, true); /* param 1 is done */
-    } else if(!fd->isHasError && !p1 && immediateAddress(par1, fd) == 1) { /* first parameter is immidiate */
-        /* bit 2 on, insert the immidiate value to the spot and turn on bit #2 */
-        handleImmidiate(word, &word1, &flag1, &p1, par1); /* first param is set */
+    } else if(!fd->isHasError && !p1 && immediateAddress(par1, fd) == 1) { /* first parameter is immediate */
+        /* bit 2 on, insert the immediate value to the spot and turn on bit #2 */
+        handleImmediate(word, &word1, &flag1, &p1, par1); /* first param is set */
     } else if(!fd->isHasError && !p1 && directAddress(par1, fd) == 1) {/* first param is direct */
         handleDirect(word, &word1, true); /* param1 defined */
     }
     if(!fd->isHasError && registerAddress(par2, fd) == 1) { /* second param is register */
         /* turn on bit #11, #12 insert the number of register to the spot and turn bit #2 on */
         handleRegister(word, &p2, par2, false); /* second param is done */ 
-    } else if(!fd->isHasError && !p2 && immediateAddress(par2, fd) == 1) { /* second param is immidiate */
-        /* bit 2 on, insert the immidiate value to the spot and turn bit #2 on */
-        handleImmidiate(word, &word2, &flag2, &p2, par2); /* second param done */
+    } else if(!fd->isHasError && !p2 && immediateAddress(par2, fd) == 1) { /* second param is immediate */
+        /* bit 2 on, insert the immediate value to the spot and turn bit #2 on */
+        handleImmediate(word, &word2, &flag2, &p2, par2); /* second param done */
     } else if(!fd->isHasError && !p2 && directAddress(par2, fd) == 1) { /* second param is direct */
         handleDirect(word, &word2, false); /* param2 defined */
     }
@@ -662,15 +644,14 @@ void Cmp_Pars(char *par1, char *par2, int *word, fileData * fd) {
 }
 
 /**
- * Function: Lea_Pars
+ * Function: leaPars
  * Function Description: handle the parameters of instruction lea, decide which param is what type and set the word
- * 
  * @param par1 first parameter
  * @param par2 second parameter
  * @param word the word to set
  * @param fd file information
  */
-void Lea_Pars(char *par1, char *par2, int *word, fileData * fd) {
+void leaPars(char *par1, char *par2, int *word, fileData * fd) {
     int p2 = 0; /* second param flag done */
     int word1 =0, word2 = 0; /* first and second params defined */
 
@@ -703,9 +684,8 @@ void Lea_Pars(char *par1, char *par2, int *word, fileData * fd) {
 
 /**
  * Function: Clr_Not_Inc_Dec_Red_Par
- * Function Description: hanndle the parameters of instructions clr, not, inc, dec, red and par
- *  decide which param is what type and set the word 
- * 
+ * Function Description: handle the parameters of instructions clr, not, inc, dec, red and par
+ *  decide which param is what type and set the word
  * @param par the given parameter
  * @param word the word to set
  * @param fd file information
@@ -714,7 +694,7 @@ void Clr_Not_Inc_Dec_Red_Par(char *par, int *word, fileData * fd) {
     int word1 = 0; /* param defined flag */
     int p1 = 0; /* param done flag */
 
-    if(immediateAddress(par, fd) == 1 || relativeAddress(par, fd) == 1) {/* check if param not immidiate nor relative */
+    if(immediateAddress(par, fd) == 1 || relativeAddress(par, fd) == 1) {/* check if param not immediate nor relative */
         setErrorData(fd, "In this instruction the parameter can be only directive or register address");
     }
     if(!fd->isHasError && registerAddress(par, fd) == 1) { /* param is register */
@@ -732,9 +712,8 @@ void Clr_Not_Inc_Dec_Red_Par(char *par, int *word, fileData * fd) {
 }
 
 /**
- * Function: Clr_Not_Inc_Dec_Red_Par
+ * Function: Jmp_Bne_Jsr_Par
  * Function Description: handle the parameter of instructions jmp,bne,jsr decide which param is what type and set the word
- * 
  * @param par the given parameter
  * @param word the word to set
  * @param fd file information
@@ -758,16 +737,15 @@ void Jmp_Bne_Jsr_Par(char *par, int *word, fileData * fd) {
 }
 
 /**
- * Function: Clr_Not_Inc_Dec_Red_Par
- * Function Description: hanndle the parameters of instruction prn, decide which param is what type and set the word
- * 
+ * Function: prnPars
+ * Function Description: handle the parameters of instruction prn, decide which param is what type and set the word
  * @param par the given parameter
  * @param word the word to set
  * @param fd file information
  */
-void Prn_Pars(char *par, int *word, fileData * fd) {
+void prnPars(char *par, int *word, fileData * fd) {
     int word1 = 0; /* flag param defined */
-    int flag1 = 0; /* flag if knwon value */
+    int flag1 = 0; /* flag if know value */
     int p1 = 0; /* param done */
 
     if(relativeAddress(par, fd) == 1) { /* check if not relative */
@@ -775,9 +753,9 @@ void Prn_Pars(char *par, int *word, fileData * fd) {
     } else if(registerAddress(par, fd) == 1) { /* register */
         /* turns on bits #11, #12 insert register number to the spot and turn on bit #2 */
         handleRegister(word, &p1, par, false); /* param  done */
-    }else if(!p1 && immediateAddress(par, fd) == 1) { /* immidiate */
-        /* turns on bit #2 insert the immidaite value to the spot and turns on bit #2 */
-        handleImmidiate(word, &word1, &flag1, &p1, par); /* param done */
+    }else if(!p1 && immediateAddress(par, fd) == 1) { /* immediate */
+        /* turns on bit #2 insert the immediate value to the spot and turns on bit #2 */
+        handleImmediate(word, &word1, &flag1, &p1, par); /* param done */
     } else if(!p1 && directAddress(par, fd) == 1) { /* direct */
         /* turns on bits #11, 2 */
         handleDirect(word, &word1, false); /* param defined */

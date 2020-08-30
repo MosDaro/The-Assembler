@@ -6,8 +6,8 @@
 #include <ctype.h>
 #include "instruction.h"
 
-#define FIRST_PASS 1
-#define SECOND_PASS 2
+#define FIRST_PASS 1 /* flag to first pass */
+#define SECOND_PASS 2 /* flag to second pass */
 #define BLANKJMP(x) while(isspace(*x)) (x)++; /* jump above blanks */
 
 /* Instruction Counter */
@@ -46,7 +46,7 @@ symbolNode *symHead;
 /* check if the symbol valid */
 void checkSymbol(char*,int, fileData * fd);
 
-/* check if the symbol length is valid */
+/* if the symbol length is valid return true else false */
 int checkSymbolLen(char * symbol, fileData *fd);
 
 /* checks if the syntax of the symbol valid */
@@ -79,7 +79,7 @@ void createExt(char* symbol, unsigned long int adrs);
 /* insert the given symbol to extern list */
 void addExt(char* symbol, unsigned long int adrs);
 
-/* reset the symbole nodes' values of linked list */
+/* reset the symbol nodes' values of linked list */
 void resetSym(symbolNode *node);
 
 #endif

@@ -1,20 +1,19 @@
 /* parse.h contain all the parse.c definitions */
 
-#ifndef PARCE_H
-#define PARCE_H
+#ifndef PARSE_H
+#define PARSE_H
 
 #include <limits.h>
 #include "symbolHandler.h"
 
-#define LINE_LEN 81
-#define DIRECTIVE_LEN 7
-#define LINE_OVER_MAX_SIZE 100
+#define LINE_LEN 81 /* max line len */
+#define LINE_OVER_MAX_SIZE 100 /* max line len with safety */
 #define Dozen 10
 
 /* Data Counter */
 extern int DC;
 
-/* Instrucation Counter */
+/* Instruction Counter */
 extern int IC;
 
 /**
@@ -44,7 +43,7 @@ int dataValidation(char *str);
 /* Checks the validity of the the comma in data parameters and turns on the relevant */
 void dataCommaValidation(int *sign, int *comma, int *digit, int *blank, int *insertFlag, fileData * fd);
 
-/* Checks the validity of the negetive/positive sign in data parameters and turns on the relevant */
+/* Checks the validity of the negative/positive sign in data parameters and turns on the relevant */
 void dataSignValidation(char *currVal, int *sign, int *comma, int *digit, int *blank, int *insertFlag, fileData * fd);
 
 /* Checks the validity of the digit in data parameters and turns on the relevant */

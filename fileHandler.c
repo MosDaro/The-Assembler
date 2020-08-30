@@ -1,10 +1,15 @@
-/* fileHandler.c is contain all the files handling */
+/**
+ * Authors: Moisei Shkil & Shimon Biton
+ * Date: 29/08/20
+ * File Name: fileHandler.c
+ * File Description: contain all the files handling.
+ */
+
 #include "fileHandler.h"
 
 /**
  * Function: resetFileDataStruct
  * Function Description: reset the values of the struct
- * 
  * @param err the error message
  * @param fileName the given file name
  */
@@ -18,7 +23,6 @@ void resetFileDataStruct(fileData * err, char * fileName){
 /**
  * Function: readFile
  * Function Description: handle the given file, parse him and make an output files
- * 
  * @param file the file name
  */
 void readFile(char *file){
@@ -42,14 +46,14 @@ void readFile(char *file){
 /**
  * Function: readFile
  * Function Description: checks the file line by line and making the basic machine code and symbol-table
- * 
  * @param fp file pointer
- * @param fd follow the data about the file, line and errors
- * @return if error accours return 0 else 1
+ * @param fd file information
+ * @return if error occurs return 0 else 1
  */
 int firstPass(FILE *fp, fileData * fd){
     char line[LINE_OVER_MAX_SIZE]="";
     int isPassOk = true;
+
     IC = 0; /* set the instruction count */
     DC = 0; /* set the data counter */
 
@@ -68,10 +72,9 @@ int firstPass(FILE *fp, fileData * fd){
 /**
  * Function: secondPass
  * Function Description: completes the missing code and tag the extern symbols
- * 
  * @param fp file pointer
- * @param fd follow the data about the file, line and errors
- * @return if error accours return 0 else 1
+ * @param fd file information
+ * @return if error occurs return 0 else 1
  */
 int secondPass(FILE *fp, fileData * fd){
     char line[LINE_LEN] = "";
@@ -95,10 +98,9 @@ int secondPass(FILE *fp, fileData * fd){
 
 /**
  * Function: insertMissing
- * Function Description: insert all the missing info code(direct address, externs etc..) 
+ * Function Description: insert all the missing info code(direct address, extern etc..)
  *  using the fix-list that contain all the cells that missing info
- * 
- * @param fd follow the data about the file, line and errors
+ * @param fd file information
  */
 void insertMissing(fileData * fd){
     int i, numberOfNode;
@@ -113,10 +115,9 @@ void insertMissing(fileData * fd){
 
 /**
  * Function: updateOp
- * Function Description: updates the code from given address using symbol-table 
- * 
- * @param fixNode the poniter to linked list of unkown symbols
- * @param fd follow the data about the file, line and errors
+ * Function Description: updates the code from given address using symbol-table
+ * @param fixNode the pointer to linked list of unknown symbols
+ * @param fd file information
  */
 void updateOp(fixNode * fixNode, fileData * fd){
     int j = 0, functionBreak = false;
@@ -163,20 +164,18 @@ void updateOp(fixNode * fixNode, fileData * fd){
 
 /**
  * Function: createFiles
- * Function Description: create object, entry, external files by given name 
- * 
+ * Function Description: create object, entry, external files by given name
  * @param fileName the file name
  */
 void createFiles(char *fileName){
     createObject(fileName); /* create object file */
-    createEntries(fileName); /* create entery file */
+    createEntries(fileName); /* create entry file */
     createExtern(fileName); /* create extern file */
 }
 
 /**
  * Function: getDataTail
  * Function Description: gets the tail of the data list
- * 
  * @return the tail of data list
  */
 dataNode * getDataTail(){
@@ -194,7 +193,6 @@ dataNode * getDataTail(){
 /**
  * Function: getSymbolTail
  * Function Description: gets the tail of the symbol list
- * 
  * @return the tail of symbol list
  */
 symbolNode * getSymbolTail(){
@@ -212,7 +210,6 @@ symbolNode * getSymbolTail(){
 /**
  * Function: getCmdTail
  * Function Description: gets the tail of the instruction list
- * 
  * @return the tail of instruction list
  */
 cmdNode * getCmdTail(){
@@ -230,7 +227,6 @@ cmdNode * getCmdTail(){
 /**
  * Function: getExtTail
  * Function Description: gets the tail of the external list
- * 
  * @return the tail of external list
  */
 externNode * getExtTail(){
@@ -247,8 +243,7 @@ externNode * getExtTail(){
 
 /**
  * Function: createObject
- * Function Description: create object file that contain all the addresses and their hexadecimal value 
- * 
+ * Function Description: create object file that contain all the addresses and their hexadecimal value
  * @param fName the file name
  */
 void createObject(char *fName){
@@ -282,7 +277,6 @@ void createObject(char *fName){
 /**
  * Function: createEntries
  * Function Description: creates entry file that contain all the entries symbols and their addresses
- * 
  * @param fName the file name
  */
 void createEntries(char *fName){
@@ -304,7 +298,6 @@ void createEntries(char *fName){
 /**
  * Function: createExtern
  * Function Description: create extern file that contain all the extern symbols and their addresses
- * 
  * @param fName the file name
  */
 void createExtern(char *fName){
@@ -340,7 +333,7 @@ void freeAll(){
  */
 void freeSymbolList(){
     symbolNode *temp;
-    
+
     while(symHead){ /* until the node head is null */
         temp = symHead->next; /* saves the next node */
         free(symHead);

@@ -4,7 +4,7 @@
 
 #include "parse.h"
 
-#define IC_START 100
+#define IC_START 100 /* address to start instruction count */
 
 /* open the given file by given style and checks if opened */
 #define FILE_OPEN(f,x,y) f = fopen(x,y);\
@@ -14,24 +14,25 @@
         return;\
     }\
 
-typedef enum{SYMBOLE_NODE, DATA_NODE, CMD_NODE, EXTERN_NODE, FIX_NODE, NUMBER_OF_LISTS} listsTypes;
-
 /* Instruction Counter */
 int IC;
 
 /* Data Counter */
 int DC;
 
+/* reset the values of the struct */
+void resetFileDataStruct(fileData * err, char * fileName);
+
 /* handle the given file, parse him and make an output files */
 void readFile(char*);
 
-/* checks the file line by line and making the basic machine code and symbol-table */
+/* checks the file line by line and making the basic machine code and symbol-table and return true if pass OK */
 int firstPass(FILE *fp, fileData * fd);
 
-/* completes the missing code and tag the extern symbols */
+/* completes the missing code and tag the extern symbols and return true if pass OK */
 int secondPass(FILE *fp, fileData * fd);
 
-/* insert all the missing info code(direct address, externs etc..) using the fix-list that contain all the cells that missing info */
+/* insert all the missing info code(direct address, extern etc..) using the fix-list that contain all the cells that missing info */
 void insertMissing(fileData * fd);
 
 /* updates the code from given address using symbol-table */
@@ -67,16 +68,16 @@ void freeExternList(void);
 /* free all the allocated memory in the fixe list */
 void freeFixList(void);
 
-/* gets the tail of the data list */
+/* return the tail of the data list */
 dataNode * getDataTail(void);
 
-/* gets the tail of the symbol list */
+/* return the tail of the symbol list */
 symbolNode * getSymbolTail(void);
 
-/* gets the tail of the instruction list */
+/* return the tail of the instruction list */
 cmdNode * getCmdTail(void);
 
-/* gets the tail of the external list */
+/* return the tail of the external list */
 externNode * getExtTail(void);
 
 #endif

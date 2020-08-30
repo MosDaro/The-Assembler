@@ -1,10 +1,14 @@
-/* symbolHandler.c contain all the symbols and symbol-table handling */
+/**
+ * Authors: Moisei Shkil & Shimon Biton
+ * Date: 29/08/20
+ * File Name: symbolHandler.c
+ * File Description: contain all the symbols and symbol-table handling.
+ */
 #include "symbolHandler.h"
 
 /**
  * Function: checkSymbol
  * Function Description: check if the symbol valid
- * 
  * @param symbol the given symbol name
  * @param numberPass the number of the pass
  * @param fd file information
@@ -23,7 +27,6 @@ void checkSymbol(char *symbol, int numberPass, fileData *fd){
 /**
  * Function: checkSymbolLen
  * Function Description: check if the symbol length is valid
- * 
  * @param symbol the given symbol name
  * @param fd file information
  * @return if the symbol valid of not
@@ -41,7 +44,6 @@ int checkSymbolLen(char * symbol, fileData *fd){
 /**
  * Function: syntaxCheck
  * Function Description: checks if the syntax of the symbol valid
- * 
  * @param symbol the given symbol name
  * @param fd file information
  */
@@ -79,7 +81,6 @@ void syntaxCheck(char *symbol, fileData * fd){
 /**
  * Function: existence
  * Function Description: checks if the symbol exist, for first pass its an error for second its valid
- * 
  * @param symbol the given symbol name
  * @param numberPass the number of the pass
  * @param fd file information
@@ -87,6 +88,7 @@ void syntaxCheck(char *symbol, fileData * fd){
 void existence(char *symbol, int numberPass, fileData * fd) {
     int isFound = -1;
     symbolNode *curr = symHead; /* pointer to head of symbol table */
+
     while(curr && isFound != true) { /* until end of symbol table */
         if(numberPass == FIRST_PASS && !strcmp(curr->name,symbol)) { /* first pass found match */
             if(curr->type & SYMBOL_EXTERNAL){
@@ -110,8 +112,7 @@ void existence(char *symbol, int numberPass, fileData * fd) {
  * Function: updateStable
  * Function Description: updates the symbol table after the first pass
  */
-void updateStable(void)
-{
+void updateStable(void) {
     symbolNode *curr = symHead;
     if(symHead == NULL) /* no symbol table */
         return;
@@ -125,8 +126,7 @@ void updateStable(void)
 
 /**
  * Function: insertSymbol
- * Function Description: inserts the give symbol name and the type if have one to symbol table 
- * 
+ * Function Description: inserts the give symbol name and the type if have one to symbol table
  * @param symbol the given symbol name
  * @param dir the type of symbol
  */
@@ -140,7 +140,6 @@ void insertSymbol(char *symbol, int dir){
 /**
  * Function: addSymbol
  * Function Description: inserts the given symbol to symbol table
- * 
  * @param symbol the given symbol name
  * @param dir the type of symbol
  */
@@ -173,7 +172,6 @@ void addSymbol(char *symbol, int dir){
 /**
  * Function: creatTable
  * Function Description: create a symbol table and insert the given symbol
- * 
  * @param symbol the given symbol name
  * @param dir the type of symbol
  */
@@ -201,8 +199,7 @@ void creatTable(char *symbol, int dir) {
 
 /**
  * Function: resetSym
- * Function Description: reset the symbole nodes' values of linked list
- * 
+ * Function Description: reset the symbol nodes' values of linked list
  * @param node the given node to reset
  */
 void resetSym(symbolNode *node){
@@ -214,13 +211,12 @@ void resetSym(symbolNode *node){
 
 /**
  * Function: entryMark
- * Function Description: marks the entry symbols in symbol table 
- * 
+ * Function Description: marks the entry symbols in symbol table
  * @param sym the given symbol to insert
  */
-void entryMark(char *sym)
-{
+void entryMark(char *sym) {
     symbolNode *curr = symHead;
+
     while(curr)
     {
         if(!strcmp(curr->name,sym)) /* found match */
@@ -233,12 +229,10 @@ void entryMark(char *sym)
 /**
  * Function: insertExt
  * Function Description: inserts the given symbol to extern list for the extern file creation
- * 
  * @param sym the given symbol to insert
  * @param adrs the addres of symbol
  */
-void insertExt(char* sym, unsigned long int adrs)
-{
+void insertExt(char* sym, unsigned long int adrs) {
     if(extHead == NULL)
         createExt(sym,adrs); /* create list */
     else
@@ -248,7 +242,6 @@ void insertExt(char* sym, unsigned long int adrs)
 /**
  * Function: createExt
  * Function Description: creates extern-list and insert the given symbol
- * 
  * @param symbol the given symbol to insert
  * @param adrs the addres of symbol
  */
@@ -267,7 +260,6 @@ void createExt(char* symbol, unsigned long int adrs){
 /**
  * Function: addExt
  * Function Description: insert the given symbol to extern list
- * 
  * @param symbol the given symbol to insert
  * @param adrs the addres of symbol
  */

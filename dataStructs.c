@@ -1,4 +1,4 @@
-/*
+/**
  * Authors: Moisei Shkil & Shimon Biton
  * Date: 29/08/20
  * File Name: dataStructs.c
@@ -11,7 +11,6 @@
 /**
  * Function: insertData
  * Function Description: insert the given value to data list
- * 
  * @param value the value to insert
  */
 void insertData(unsigned long int value){
@@ -25,7 +24,6 @@ void insertData(unsigned long int value){
 /**
  * Function: createData
  * Function Description: creates data list and insert the given value to the list
- * 
  * @param value the value to insert
  */
 void createData(unsigned long int value){
@@ -45,11 +43,9 @@ void createData(unsigned long int value){
     DC++; /* data counter increase */
 }
 
-
 /**
  * Function: addData
  * Function Description: insert the given value to data list
- * 
  * @param value the value to insert
  */
 void addData(unsigned long int value){
@@ -73,12 +69,11 @@ void addData(unsigned long int value){
 
 /**
  * Function: insertCmd
- * Function Description: insert the given value to instruction list and if the value unknowen to fix list
- * 
+ * Function Description: insert the given value to instruction list and if the value unknown to fix list
  * @param value the value to insert
  * @param address the address to save
  * @param sym the symbol name
- * @param fd
+ * @param fd file information
  */
 void insertCmd(unsigned long int value, unsigned long int address, char *sym, fileData * fd) {
     if(address && sym){ /* the address and the symbol name not empty */
@@ -98,7 +93,6 @@ void insertCmd(unsigned long int value, unsigned long int address, char *sym, fi
 /**
  * Function: createCmd
  * Function Description: creates list of instructions code and set the value
- * 
  * @param value the value to insert
  */
 void createCmd(unsigned long int value){
@@ -121,7 +115,6 @@ void createCmd(unsigned long int value){
 /**
  * Function: addCMD
  * Function Description: adds new node to cmd list and insert the value
- * 
  * @param value the value to insert
  */
 void addCMD(unsigned long int value) {
@@ -146,10 +139,9 @@ void addCMD(unsigned long int value) {
 /**
  * Function: createFix
  * Function Description: create fix list and insert the given values to the head
- * 
  * @param address the address to save
  * @param sym the symbol name
- * @param fd
+ * @param fd file information
  */
 void createFix(unsigned long int address, char *sym, fileData * fd) {
     fixHead = (fixNode*)malloc(sizeof(fixNode)); /* memo allocation */
@@ -167,10 +159,9 @@ void createFix(unsigned long int address, char *sym, fileData * fd) {
 /**
  * Function: addFix
  * Function Description: inserts the given address and symbol to fix list
- * 
  * @param address the address to save
  * @param sym the symbol name
- * @param fd
+ * @param fd file information
  */
 void addFix(unsigned long int address, char *sym, fileData * fd){
     fixNode *node = (fixNode*)malloc(sizeof(fixNode));
@@ -190,7 +181,6 @@ void addFix(unsigned long int address, char *sym, fileData * fd){
 /**
  * Function: makeMask
  * Function Description: returns mask with given bit number on
- * 
  * @param bitNum the number of bit to turn on
  * @return the edited mask
  */
@@ -204,13 +194,13 @@ int makeMask(int bitNum){
 /**
  * Function: setVal
  * Function Description: insert the given int value to the given pointer 24 bits field
- * 
  * @param word the word to set
  * @param value the value to insert
  */
 void setVal(unsigned char* word, unsigned long int value){
     unsigned char *pWord = word; /* pointer to the start of the field */
     int mask = FIRST_FIELD & value; /* mask the turned on bits */
+
     *pWord |= mask; /* insert them */
 
     pWord++; /* next field */
@@ -227,7 +217,6 @@ void setVal(unsigned char* word, unsigned long int value){
 /**
  * Function: setInt
  * Function Description: gets pointer of word and insert the value to int variable
- * 
  * @param word the given word to insert
  * @return the result of word inserted to int
  */
@@ -252,7 +241,6 @@ int setInt(unsigned char* word){
 /**
  * Function: clearARE
  * Function Description: moves all the bits 3 spots left to make space for ARE
- * 
  * @param word the word to fix ARE
  */
 void clearARE(unsigned char *word){
@@ -280,12 +268,12 @@ void clearARE(unsigned char *word){
 /**
  * Function: resetAlocVal
  * Function Description: reset all the 24 bits of given pointer
- * 
  * @param val the value to reset
  */
 void resetAlocVal(unsigned char *val){
     unsigned char *pointer = val;
-    *pointer = 0;
-    *(++pointer) = 0;
-    *(++pointer) = 0;
+
+    *pointer = 0; /* reset higher byte in word */
+    *(++pointer) = 0; /* reset middle byte in word */
+    *(++pointer) = 0; /* reset lower byte in word */
 }
