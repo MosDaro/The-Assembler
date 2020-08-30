@@ -10,6 +10,8 @@ char *cmdList[] = {"","mov","cmp","add","sub","lea","clr","not","inc","dec","jmp
                   "red","prn","rts","stop"};
 char *regList[] = {"r0","r1","r2","r3","r4","r5","r6","r7"};
 
+char * directiveList[] = {"extern", "entry", "data", "string"};
+
 
 /**
  * Function: cmdParse
